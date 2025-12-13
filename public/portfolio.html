@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Navigator - Flo Faction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: rgba(15, 20, 25, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #64c8ff;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        .header {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: rgba(30, 40, 50, 0.5);
+            border-bottom: 1px solid rgba(100, 200, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #64c8ff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a0d4ff;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .widget-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .widget-section h2 {
+            font-size: 1.8rem;
+            color: #64c8ff;
+            margin-bottom: 1.5rem;
+        }
+
+        .widget-section p {
+            color: #a0d4ff;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            background: rgba(0, 255, 136, 0.05);
+            border-left: 3px solid #00ff88;
+            padding: 1.5rem;
+            border-radius: 6px;
+        }
+
+        .feature h3 {
+            color: #00ff88;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            color: #a0d4ff;
+            font-size: 0.95rem;
+        }
+
+        .widget-container {
+            margin: 2rem 0;
+            min-height: 600px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        footer {
+            background: #0a0f15;
+            padding: 2rem;
+            text-align: center;
+            color: #64c8ff;
+            border-top: 1px solid rgba(100, 200, 255, 0.1);
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: #64c8ff;
+            margin: 0 1rem;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="/">Home</a>
+            <a href="/#services">Services</a>
+            <a href="/#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>📊 Portfolio Navigator</h1>
+        <p>Professional portfolio analysis, investment strategies, and personalized wealth management powered by AI</p>
+    </div>
+
+    <div class="container">
+        <div class="widget-section">
+            <h2>Your Personal Portfolio Specialist</h2>
+            <p>Meet our AI-powered Portfolio Navigator, designed to help you analyze your investments, develop data-driven strategies, and achieve your financial goals. Our specialist provides:</p>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>Portfolio Analysis</h3>
+                    <p>Deep analysis of your investment holdings and performance</p>
+                </div>
+                <div class="feature">
+                    <h3>Investment Strategy</h3>
+                    <p>Personalized investment recommendations based on your goals</p>
+                </div>
+                <div class="feature">
+                    <h3>Risk Assessment</h3>
+                    <p>Evaluate and optimize your portfolio's risk profile</p>
+                </div>
+                <div class="feature">
+                    <h3>Wealth Growth</h3>
+                    <p>Strategies to grow and protect your assets effectively</p>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 2rem;">Chat with Portfolio Navigator</h2>
+            <p>Ask our AI specialist any questions about your portfolio, investment strategy, or wealth management goals.</p>
+            
+            <div class="widget-container">
+                <elevenlabs-convai agent-id="agent_3d4k7m9n2x5w8p1q6r8t"></elevenlabs-convai>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Flo Faction. All rights reserved.</p>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+    </footer>
+
+    <script src="https://elevenlabs.io/convai?agent-id=agent_3d4k7m9n2x5w8p1q6r8t"></script>
+    <script src="/public/js/router.js"></script>
+</body>
+</html>
