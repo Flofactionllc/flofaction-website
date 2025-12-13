@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flo Faction - Insurance & Wealth Management</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; color: #333; }
+        header { background: white; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .section { background: white; padding: 30px; margin: 20px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .button { padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .button:hover { background: #764ba2; }
+        form { display: flex; flex-direction: column; }
+        input, textarea { padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Flo Faction</h1>
+        <p>Insurance & Wealth Management Solutions</p>
+    </header>
+    <div class="container">
+        <section class="section">
+            <h2>Welcome</h2>
+            <p>Experience AI-powered financial solutions</p>
+            <button class="button" data-action="submit-contact">Contact Us</button>
+            <button class="button" data-action="start-batch-call">Schedule Call</button>
+        </section>
+        <section class="section">
+            <h2>Contact Form</h2>
+            <form id="contact-form">
+                <input type="text" name="name" placeholder="Your Name">
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <textarea id="message" name="message" placeholder="Your message..." required></textarea>
+                <button type="submit" class="button" data-action="submit-contact">Send</button>
+            </form>
+        </section>
+    </div>
+    <script src="/js/router.js"></script>
+</body>
+</html>
