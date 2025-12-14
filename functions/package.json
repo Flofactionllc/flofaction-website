@@ -12,6 +12,7 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
+        "build": "echo 'No build needed for static deployment'",
   },
   "dependencies": {
     "firebase-functions": "^5.0.0",
