@@ -2,8 +2,7 @@
   "version": 2,
   "name": "flofaction-website",
   "public": false,
-"buildCommand": ""  "outputDirectory": "public",
-  "builds": [
+"buildCommand": "", "outputDirectory": "public",  "builds": [
     {
       "src": "package.json",
       "use": "@vercel/static-build",
