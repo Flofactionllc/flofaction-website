@@ -1,0 +1,10 @@
+{
+  "name": "flofaction-website",
+  "version": "1.0.0",
+  "description": "FloFaction Marketing Website",
+  "main": "public/index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
+  "dependencies": {}
+}
