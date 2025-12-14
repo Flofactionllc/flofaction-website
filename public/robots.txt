@@ -1,0 +1,28 @@
+# Allow all bots to crawl Flo Faction website
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: *.pdf
+Disallow: *.doc
+Disallow: /api/
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Specify sitemap
+Sitemap: https://www.flofaction.com/sitemap.xml
+Sitemap: https://flofaction.com/sitemap.xml
