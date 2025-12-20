@@ -133,3 +133,59 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
     }
   });
 });
+
+// Submit Intake Form Handler - Routes to service-type specific inboxes
+exports.submitIntake = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+    try {
+      const { serviceType, firstName, lastName, email, phone, contactPreference, message, timestamp, submittedFrom } = req.body;
+      
+      // Validation
+      if (!serviceType || !firstName || !email) {
+        return res.status(400).json({ error: 'Service type, first name, and email are required' });
+      }
+      
+      // Service-type to email mapping
+      const serviceTypeRouting = {
+        'WATERFALL': 'waterfall@flofaction.com',
+        'BANK': 'banking@flofaction.com',
+        'LIFE': 'lifeinsurance@flofaction.com',
+        'WEALTH': 'wealth@flofaction.com',
+        'LEGACY': 'legacy@flofaction.com'
+      };
+      
+      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.insurance@gmail.com';
+      
+      // Store submission in Firestore
+      await admin.firestore().collection('intakeSubmissions').add({
+        serviceType,
+        firstName,
+        lastName,
+        email,
+        phone: phone || '',
+        contactPreference: contactPreference || 'email',
+        message: message || '',
+        submittedFrom: submittedFrom || '',
+        recipientEmail,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'new',
+        readAt: null
+      });
+      
+      res.status(200).json({
+        success: true,
+        message: 'Intake form submitted successfully',
+        recipientEmail
+      });
+    } catch (error) {
+      console.error('Intake submission error:', error);
+      res.status(500).json({
+        error: 'Failed to process intake form',
+        details: error.message
+      });
+    }
+  });
+});
