@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Client Intake Form - Flo Faction Insurance</title>
+    <title>Client Intake Form - Flo Faction Insurance</title>
     <style>
         * {
             margin: 0;
@@ -14,28 +14,47 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
         .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-section {
             background: white;
             border-radius: 10px;
+            padding: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+        .calendar-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
         .form-group {
             margin-bottom: 20px;
@@ -44,11 +63,13 @@
             display: block;
             margin-bottom: 8px;
             color: #333;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
         }
         input[type="text"],
         input[type="email"],
         input[type="tel"],
+        input[type="date"],
         select,
         textarea {
             width: 100%;
@@ -57,11 +78,9 @@
             border-radius: 5px;
             font-size: 14px;
             font-family: inherit;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
+        input:focus,
         select:focus,
         textarea:focus {
             outline: none;
@@ -75,7 +94,7 @@
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
         }
         @media (max-width: 600px) {
             .form-row {
@@ -123,86 +142,134 @@
             content: ' *';
             color: #e74c3c;
         }
+        .calendar-widget {
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9ff;
+        }
+        .calendar-widget h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .calendar-widget p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .calendar-button {
+            background: #667eea;
+            padding: 12px 24px;
+            display: inline-block;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>New Client Intake Form</h1>
-        <p class="subtitle">Tell us about yourself so we can better serve you</p>
-        
-        <div class="success-message" id="successMessage">
-            Thank you! Your intake form has been submitted successfully. We'll be in touch soon.
+        <div class="header">
+            <h1>Flo Faction Insurance</h1>
+            <p>Client Intake Form & Appointment Scheduling</p>
         </div>
-        <div class="error-message" id="errorMessage">
-            <span id="errorText">There was an error submitting your form. Please try again.</span>
+
+        <div class="content">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2 style="margin-bottom: 20px; color: #333;">Client Information</h2>
+                
+                <div class="success-message" id="successMessage">
+                    ✓ Thank you! Your intake form has been submitted. We'll be in touch soon.
+                </div>
+                <div class="error-message" id="errorMessage">
+                    <span id="errorText">There was an error submitting your form. Please try again.</span>
+                </div>
+
+                <form id="intakeForm">
+                    <div class="form-group">
+                        <label for="serviceType" class="required">Service Type</label>
+                        <select id="serviceType" name="serviceType" required>
+                            <option value="">-- Select a service --</option>
+                            <option value="WATERFALL">Waterfall Strategy (Generational Wealth)</option>
+                            <option value="BANK">Banking Solutions (Infinite Banking)</option>
+                            <option value="LIFE">Life Insurance (Protection)</option>
+                            <option value="WEALTH">Wealth Management</option>
+                            <option value="LEGACY">Legacy Planning</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="required">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="required">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="required">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPreference">Preferred Contact Method</label>
+                        <select id="contactPreference" name="contactPreference">
+                            <option value="email">Email</option>
+                            <option value="phone">Phone</option>
+                            <option value="text">Text/SMS</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Tell us about your situation</label>
+                        <textarea id="message" name="message" placeholder="Financial goals, insurance needs, or questions..."></textarea>
+                    </div>
+
+                    <button type="submit">Submit & Schedule Appointment</button>
+                </form>
+            </div>
+
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="calendar-widget">
+                    <h3>📅 Schedule Your Consultation</h3>
+                    <p>Book a time that works best for you. Click below to select from available slots:</p>
+                    
+                    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3YzcL1IUbSp_lpmIXYN7jvMOPvFLa0TFYyY0mK2u9RdGvlMbsfR7u_dBdXgdMXkE_Wp83_3Tz4aL94PjZPlMvUEpL5AHpGqGb34sM34vhqPPHW8TU4" 
+                            style="border:solid 1px #777; width: 100%; height: 600px; margin-top: 20px; border-radius: 5px;" 
+                            frameborder="0" 
+                            allow="calendar"></iframe>
+                </div>
+            </div>
         </div>
-        
-        <form id="intakeForm">
-            <div class="form-group">
-                <label for="serviceType" class="required">Service Type</label>
-                <select id="serviceType" name="serviceType" required>
-                    <option value="">-- Select a service --</option>
-                    <option value="WATERFALL">Waterfall Strategy (Generational Wealth)</option>
-                    <option value="BANK">Banking Solutions (Infinite Banking)</option>
-                    <option value="LIFE">Life Insurance (Protection)</option>
-                    <option value="WEALTH">Wealth Management</option>
-                    <option value="LEGACY">Legacy Planning</option>
-                </select>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName" class="required">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="lastName" class="required">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="email" class="required">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone">
-            </div>
-            
-            <div class="form-group">
-                <label for="contactPreference">Preferred Contact Method</label>
-                <select id="contactPreference" name="contactPreference">
-                    <option value="email">Email</option>
-                    <option value="phone">Phone</option>
-                    <option value="text">Text/SMS</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="message">Additional Information / Questions</label>
-                <textarea id="message" name="message" placeholder="Tell us more about your situation or ask any questions..."></textarea>
-            </div>
-            
-            <button type="submit">Submit Intake Form</button>
-        </form>
     </div>
-    
+
     <script>
         const form = document.getElementById('intakeForm');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const errorText = document.getElementById('errorText');
-        
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Hide messages
+
             successMessage.style.display = 'none';
             errorMessage.style.display = 'none';
-            
-            // Collect form data
+
             const formData = new FormData(form);
             const payload = {
                 serviceType: formData.get('serviceType'),
@@ -210,14 +277,14 @@
                 lastName: formData.get('lastName'),
                 email: formData.get('email'),
                 phone: formData.get('phone') || '',
+                dateOfBirth: formData.get('dateOfBirth') || '',
                 contactPreference: formData.get('contactPreference') || 'email',
                 message: formData.get('message') || '',
                 submittedFrom: window.location.href,
                 timestamp: new Date().toISOString()
             };
-            
+
             try {
-                // Submit to Cloud Function
                 const response = await fetch(
                     'https://us-central1-flofaction-website-44132480.cloudfunctions.net/submitIntake',
                     {
@@ -228,13 +295,12 @@
                         body: JSON.stringify(payload)
                     }
                 );
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok && data.success) {
                     successMessage.style.display = 'block';
                     form.reset();
-                    // Scroll to success message
                     successMessage.scrollIntoView({ behavior: 'smooth' });
                 } else {
                     throw new Error(data.error || 'Failed to submit form');
