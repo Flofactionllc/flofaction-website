@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Opt-In - Flo Faction Insurance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .checkbox-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .checkbox-label:last-child {
+            margin-bottom: 0;
+        }
+        input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .consent-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .terms {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #666;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀 Flo Faction</div>
+        <h1>SMS Notifications Sign-Up</h1>
+        <p class="subtitle">Stay connected with your insurance updates via text message</p>
+        
+        <form id="smsOptInForm">
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Mobile Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="(888) 255-1191">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+            </div>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="smsConsent" required>
+                    <span class="consent-text">
+                        <strong>I agree to receive text messages (SMS)</strong> from Flo Faction LLC regarding my insurance policy, including account notifications, payment reminders, policy updates, and customer service communications.
+                    </span>
+                </label>
+            </div>
+            
+            <div class="terms">
+                <strong>Important Information:</strong><br>
+                • Message frequency varies based on your policy activity<br>
+                • Reply <strong>STOP</strong> to opt out or <strong>HELP</strong> for assistance<br>
+                • Message and data rates may apply<br>
+                • By submitting this form, you explicitly consent to receive SMS from Flo Faction LLC<br>
+                • You can withdraw consent at any time by texting STOP
+            </div>
+            
+            <button type="submit">Subscribe to SMS Notifications</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            <h3>✅ Successfully Subscribed!</h3>
+            <p>Thank you! You're now subscribed to Flo Faction insurance notifications via SMS.</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('smsOptInForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('smsOptInForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
