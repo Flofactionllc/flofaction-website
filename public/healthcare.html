@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Planning - Flo Faction</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Flo Faction</div>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/insurance.html">Insurance</a></li>
+                <li><a href="/retirement.html">Retirement</a></li>
+                <li><a href="/healthcare.html" class="active">Healthcare</a></li>
+                <li><a href="/travel.html">Travel</a></li>
+                <li><a href="/real-estate.html">Real Estate</a></li>
+                <li><a href="/tax.html">Tax</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Healthcare Planning Services</h1>
+            <p>Expert guidance for your healthcare and Medicare decisions</p>
+        </section>
+
+        <section class="service-details">
+            <h2>Comprehensive Healthcare Planning</h2>
+            <p>Navigate the complex world of healthcare insurance with personalized support from our AI-powered agents.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>Medicare Guidance</h3>
+                    <p>Get help understanding Medicare options, enrollment periods, and coverage decisions.</p>
+                </div>
+                <div class="feature">
+                    <h3>Supplement Plans</h3>
+                    <p>Compare and select the right Medicare supplement or Advantage plans for your needs.</p>
+                </div>
+                <div class="feature">
+                    <h3>Prescription Coverage</h3>
+                    <p>Optimize your Part D prescription drug coverage with expert analysis.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="widget-container">
+            <h2>Get Healthcare Planning Assistance</h2>
+            <p>Chat with our healthcare specialist to explore your options</p>
+            <div id="healthcare-widget"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Flo Faction LLC. All rights reserved.</p>
+    </footer>
+
+    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const widget = document.getElementById('healthcare-widget');
+            if (widget && window.ElevenLabsConvai) {
+                new window.ElevenLabsConvai({
+                    agentId: "YOUR_HEALTHCARE_AGENT_ID",
+                    container: widget
+                });
+            }
+        });
+    </script>
+</body>
+</html>
