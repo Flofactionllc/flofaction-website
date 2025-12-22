@@ -2,11 +2,23 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const axios = require('axios');
+const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
 const GEMINI_API_KEY = 'AlzaSyAIfXpcGndNb2dNHs07_QcAi6Od37_DACw';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
+
+// Gmail SMTP Configuration
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'flofactionllc@gmail.com',
+    pass: 'nucv fyic nouc hdka'
+  }
+});
 
 // Submit Intake Form Handler
 exports.submitIntake = functions.https.onRequest((req, res) => {
@@ -14,15 +26,14 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
     if (req.method !== 'POST') {
       return res.status(405).json({ success: false, error: 'Method not allowed' });
     }
-
     try {
       const { serviceType, firstName, lastName, email, phone, dateOfBirth, contactPreference, message, submittedFrom } = req.body;
-
+      
       // Validation
       if (!serviceType || !firstName || !email) {
         return res.status(400).json({ success: false, error: 'Service type, first name, and email are required' });
       }
-
+      
       // Store in Firestore
       const doc = await admin.firestore().collection('intakeSubmissions').add({
         serviceType,
@@ -37,7 +48,37 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         status: 'new'
       });
+      
+      // Send email notification to company
+      const emailContent = `
+New Intake Form Submission
 
+Service Type: ${serviceType}
+First Name: ${firstName}
+Last Name: ${lastName}
+Email: ${email}
+Phone: ${phone || 'N/A'}
+Date of Birth: ${dateOfBirth || 'N/A'}
+Preferred Contact Method: ${contactPreference || 'Email'}
+
+Message:
+${message || 'No message provided'}
+
+Submitted From: ${submittedFrom || 'Unknown'}
+Submission ID: ${doc.id}
+      `;
+      
+      try {
+        await transporter.sendMail({
+          from: 'flofactionllc@gmail.com',
+          to: 'flofaction.business@gmail.com',
+          subject: `New Intake Form Submission - ${firstName} ${lastName}`,
+          text: emailContent
+        });
+      } catch (emailError) {
+        console.error('Email sending error:', emailError);
+      }
+      
       return res.status(200).json({
         success: true,
         message: 'Intake form submitted successfully',
@@ -65,6 +106,7 @@ exports.contact = functions.https.onRequest((req, res) => {
       if (!email || !message) {
         return res.status(400).json({ success: false, error: 'Email and message required' });
       }
+      
       await admin.firestore().collection('contacts').add({
         email,
         message,
@@ -72,6 +114,7 @@ exports.contact = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         status: 'new'
       });
+      
       res.status(200).json({
         success: true,
         message: 'Contact form submitted successfully'
@@ -98,6 +141,7 @@ exports.batchCall = functions.https.onRequest((req, res) => {
       if (!phoneNumber || !agentId) {
         return res.status(400).json({ success: false, error: 'Phone number and agent ID required' });
       }
+      
       const callRecord = await admin.firestore().collection('batch_calls').add({
         phoneNumber,
         name: name || 'Unknown',
@@ -107,6 +151,7 @@ exports.batchCall = functions.https.onRequest((req, res) => {
         status: 'initiated',
         recordingUrl: ''
       });
+      
       res.status(200).json({
         success: true,
         message: 'Batch call initiated',
@@ -131,6 +176,7 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
         .orderBy('timestamp', 'desc')
         .limit(50)
         .get();
+      
       const submissions = [];
       snapshot.forEach(doc => {
         submissions.push({
@@ -138,6 +184,7 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
           ...doc.data()
         });
       });
+      
       res.status(200).json({
         success: true,
         count: submissions.length,
