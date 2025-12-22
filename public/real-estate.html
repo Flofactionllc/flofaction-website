@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Services - Flo Faction</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Flo Faction</div>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/insurance.html">Insurance</a></li>
+                <li><a href="/retirement.html">Retirement</a></li>
+                <li><a href="/healthcare.html">Healthcare</a></li>
+                <li><a href="/travel.html">Travel</a></li>
+                <li><a href="/real-estate.html" class="active">Real Estate</a></li>
+                <li><a href="/tax.html">Tax</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Real Estate Services</h1>
+            <p>Expert guidance for buying, selling, and managing property</p>
+        </section>
+
+        <section class="service-details">
+            <h2>Comprehensive Real Estate Support</h2>
+            <p>Whether you're buying your first home or managing investment properties, our AI-powered agents provide expert assistance.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>Home Buying</h3>
+                    <p>Get guidance through the home buying process, from search to closing.</p>
+                </div>
+                <div class="feature">
+                    <h3>Property Selling</h3>
+                    <p>Maximize your property value with expert selling strategies and market insights.</p>
+                </div>
+                <div class="feature">
+                    <h3>Investment Properties</h3>
+                    <p>Learn about investment opportunities and property management best practices.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="widget-container">
+            <h2>Real Estate Consultation</h2>
+            <p>Chat with our real estate specialist for personalized advice</p>
+            <div id="realestate-widget"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Flo Faction LLC. All rights reserved.</p>
+    </footer>
+
+    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const widget = document.getElementById('realestate-widget');
+            if (widget && window.ElevenLabsConvai) {
+                new window.ElevenLabsConvai({
+                    agentId: "YOUR_REALESTATE_AGENT_ID",
+                    container: widget
+                });
+            }
+        });
+    </script>
+</body>
+</html>
