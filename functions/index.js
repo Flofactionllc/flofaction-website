@@ -17,7 +17,6 @@ exports.contact = functions.https.onRequest((req, res) => {
 
     try {
       const { email, message, name } = req.body;
-
       // Validation
       if (!email || !message) {
         return res.status(400).json({ error: 'Email and message required' });
@@ -68,7 +67,6 @@ exports.batchCall = functions.https.onRequest((req, res) => {
 
     try {
       const { phoneNumber, name, email, agentId } = req.body;
-
       if (!phoneNumber || !agentId) {
         return res.status(400).json({ error: 'Phone number and agent ID required' });
       }
@@ -86,7 +84,6 @@ exports.batchCall = functions.https.onRequest((req, res) => {
 
       // Trigger ElevenLabs call (would integrate with their API)
       // This is a placeholder for actual ElevenLabs integration
-
       res.status(200).json({
         success: true,
         message: 'Batch call initiated',
@@ -140,6 +137,7 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
+
     try {
       const { serviceType, firstName, lastName, email, phone, contactPreference, message, timestamp, submittedFrom } = req.body;
       
@@ -148,16 +146,33 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         return res.status(400).json({ error: 'Service type, first name, and email are required' });
       }
       
-      // Service-type to email mapping
+      // Service-type to email mapping - routes to business or insurance
       const serviceTypeRouting = {
-        'WATERFALL': 'waterfall@flofaction.com',
-        'BANK': 'banking@flofaction.com',
-        'LIFE': 'lifeinsurance@flofaction.com',
-        'WEALTH': 'wealth@flofaction.com',
-        'LEGACY': 'legacy@flofaction.com'
+        // Insurance & Finance Services -> flofaction.insurance
+        'waterfall': 'flofaction.insurance@gmail.com',
+        'banking': 'flofaction.insurance@gmail.com',
+        'life-insurance': 'flofaction.insurance@gmail.com',
+        'wealth-management': 'flofaction.insurance@gmail.com',
+        'legacy-planning': 'flofaction.insurance@gmail.com',
+        
+        // Services -> flofaction.business
+        'healthcare': 'flofaction.business@gmail.com',
+        'travel': 'flofaction.business@gmail.com',
+        'real-estate': 'flofaction.business@gmail.com',
+        'tax': 'flofaction.business@gmail.com',
+        'retirement': 'flofaction.business@gmail.com',
+        
+        // Creative Services -> flofaction.business
+        'web-dev': 'flofaction.business@gmail.com',
+        'music': 'flofaction.business@gmail.com',
+        'videography': 'flofaction.business@gmail.com',
+        'portfolio': 'flofaction.business@gmail.com',
+        
+        // Emergency -> flofaction.insurance
+        'emergency': 'flofaction.insurance@gmail.com'
       };
       
-      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.insurance@gmail.com';
+      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.business@gmail.com';
       
       // Store submission in Firestore
       await admin.firestore().collection('intakeSubmissions').add({
