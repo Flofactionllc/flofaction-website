@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Planning - Flo Faction</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Flo Faction</div>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/insurance.html">Insurance</a></li>
+                <li><a href="/retirement.html">Retirement</a></li>
+                <li><a href="/healthcare.html">Healthcare</a></li>
+                <li><a href="/travel.html">Travel</a></li>
+                <li><a href="/real-estate.html">Real Estate</a></li>
+                <li><a href="/tax.html" class="active">Tax</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Tax Planning Services</h1>
+            <p>Expert tax planning and preparation assistance</p>
+        </section>
+
+        <section class="service-details">
+            <h2>Comprehensive Tax Support</h2>
+            <p>Navigate tax season with confidence using our AI-powered tax planning assistance and expert guidance.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>Tax Preparation</h3>
+                    <p>Get help organizing documents and understanding tax filing requirements.</p>
+                </div>
+                <div class="feature">
+                    <h3>Tax Strategy</h3>
+                    <p>Learn about deductions, credits, and strategies to optimize your tax situation.</p>
+                </div>
+                <div class="feature">
+                    <h3>Year-Round Planning</h3>
+                    <p>Proactive tax planning to help you make informed financial decisions throughout the year.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="widget-container">
+            <h2>Tax Planning Consultation</h2>
+            <p>Chat with our tax specialist for personalized guidance</p>
+            <div id="tax-widget"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Flo Faction LLC. All rights reserved.</p>
+    </footer>
+
+    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const widget = document.getElementById('tax-widget');
+            if (widget && window.ElevenLabsConvai) {
+                new window.ElevenLabsConvai({
+                    agentId: "YOUR_TAX_AGENT_ID",
+                    container: widget
+                });
+            }
+        });
+    </script>
+</body>
+</html>
