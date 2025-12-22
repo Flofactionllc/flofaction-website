@@ -14,11 +14,11 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'flofactionllc@gmail.com',
-    pass: process.env.GMAIL_APP_PASSWORD || 'nucv fyic nouc hdka'
+    pass: 'nucv fyic nouc hdka'
   }
 });
 
-// Submit Intake Form Handler - Routes to service-type specific inboxes and SENDS EMAIL
+// Submit Intake Form Handler
 exports.submitIntake = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     if (req.method !== 'POST') {
@@ -26,60 +26,43 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
     }
 
     try {
-      const { serviceType, firstName, lastName, email, phone, contactPreference, message, timestamp, submittedFrom } = req.body;
-      
+      const { serviceType, firstName, lastName, email, phone, dateOfBirth, contactPreference, message, timestamp, submittedFrom } = req.body;
+
       // Validation
       if (!serviceType || !firstName || !email) {
         return res.status(400).json({ error: 'Service type, first name, and email are required' });
       }
-      
-      // Service-type to email mapping
-      const serviceTypeRouting = {
-        // Insurance & Finance Services -> flofaction.insurance
-        'waterfall': 'flofaction.insurance@gmail.com',
-        'banking': 'flofaction.insurance@gmail.com',
-        'life-insurance': 'flofaction.insurance@gmail.com',
-        'wealth-management': 'flofaction.insurance@gmail.com',
-        'legacy-planning': 'flofaction.insurance@gmail.com',
-        
-        // Business services -> flofaction.business
-        'healthcare': 'flofaction.business@gmail.com',
-        'travel': 'flofaction.business@gmail.com',
-        'real-estate': 'flofaction.business@gmail.com',
-        'tax': 'flofaction.business@gmail.com',
-        'retirement': 'flofaction.business@gmail.com',
-        
-        // Creative Services -> flofaction.business
-        'web-dev': 'flofaction.business@gmail.com',
-        'music': 'flofaction.business@gmail.com',
-        'videography': 'flofaction.business@gmail.com',
-        'portfolio': 'flofaction.business@gmail.com',
-        
-        // Emergency -> flofaction.insurance
-        'emergency': 'flofaction.insurance@gmail.com'
-      };
-      
-      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.business@gmail.com';
-      
+
+      // Determine recipient email based on service type
+      let recipientEmail = 'flofaction.business@gmail.com';
+      if (serviceType.toLowerCase().includes('waterfall') || 
+          serviceType.toLowerCase().includes('banking') || 
+          serviceType.toLowerCase().includes('insurance') || 
+          serviceType.toLowerCase().includes('wealth') || 
+          serviceType.toLowerCase().includes('legacy') || 
+          serviceType.toLowerCase().includes('emergency')) {
+        recipientEmail = 'flofaction.insurance@gmail.com';
+      }
+
       // Create email content
       const emailContent = `
-        New Intake Form Submission
-        
-        Service Type: ${serviceType}
-        Name: ${firstName} ${lastName}
-        Email: ${email}
-        Phone: ${phone || 'Not provided'}
-        Date of Birth: ${req.body.dateOfBirth || 'Not provided'}
-        Preferred Contact: ${contactPreference || 'Email'}
-        
-        Message/Details:
-        ${message || 'No additional details provided'}
-        
-        Submitted From: ${submittedFrom || 'Unknown'}
-        Timestamp: ${new Date().toISOString()}
+New Intake Form Submission
+
+Service Type: ${serviceType}
+Name: ${firstName} ${lastName}
+Email: ${email}
+Phone: ${phone || 'Not provided'}
+Date of Birth: ${dateOfBirth || 'Not provided'}
+Preferred Contact: ${contactPreference || 'Email'}
+
+Message/Details:
+${message || 'No additional details provided'}
+
+Submitted From: ${submittedFrom || 'Unknown'}
+Timestamp: ${new Date().toISOString()}
       `;
-      
-      // Send email to recipient
+
+      // Send email
       const mailOptions = {
         from: 'flofactionllc@gmail.com',
         to: recipientEmail,
@@ -87,27 +70,26 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         text: emailContent,
         replyTo: email
       };
-      
-      // Send the email
+
       await transporter.sendMail(mailOptions);
-      
-      // Store submission in Firestore
+
+      // Store in Firestore
       await admin.firestore().collection('intakeSubmissions').add({
         serviceType,
         firstName,
         lastName,
         email,
         phone: phone || '',
+        dateOfBirth: dateOfBirth || '',
         contactPreference: contactPreference || 'email',
         message: message || '',
         submittedFrom: submittedFrom || '',
         recipientEmail,
         emailSent: true,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'new',
-        readAt: null
+        status: 'new'
       });
-      
+
       res.status(200).json({
         success: true,
         message: 'Intake form submitted successfully and email sent',
@@ -116,6 +98,7 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
     } catch (error) {
       console.error('Intake submission error:', error);
       res.status(500).json({
+        success: false,
         error: 'Failed to process intake form',
         details: error.message
       });
@@ -129,13 +112,11 @@ exports.contact = functions.https.onRequest((req, res) => {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
-
     try {
       const { email, message, name } = req.body;
       if (!email || !message) {
         return res.status(400).json({ error: 'Email and message required' });
       }
-
       await admin.firestore().collection('contacts').add({
         email,
         message,
@@ -143,7 +124,6 @@ exports.contact = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         status: 'new'
       });
-
       res.status(200).json({
         success: true,
         message: 'Contact form submitted successfully',
@@ -152,6 +132,7 @@ exports.contact = functions.https.onRequest((req, res) => {
     } catch (error) {
       console.error('Contact error:', error);
       res.status(500).json({
+        success: false,
         error: 'Failed to process contact form',
         details: error.message
       });
@@ -159,19 +140,17 @@ exports.contact = functions.https.onRequest((req, res) => {
   });
 });
 
-// Batch Calling Handler with ElevenLabs
+// Batch Call Handler
 exports.batchCall = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
-
     try {
       const { phoneNumber, name, email, agentId } = req.body;
       if (!phoneNumber || !agentId) {
         return res.status(400).json({ error: 'Phone number and agent ID required' });
       }
-
       const callRecord = await admin.firestore().collection('batch_calls').add({
         phoneNumber,
         name: name || 'Unknown',
@@ -181,7 +160,6 @@ exports.batchCall = functions.https.onRequest((req, res) => {
         status: 'initiated',
         recordingUrl: ''
       });
-
       res.status(200).json({
         success: true,
         message: 'Batch call initiated',
@@ -190,6 +168,7 @@ exports.batchCall = functions.https.onRequest((req, res) => {
     } catch (error) {
       console.error('Batch call error:', error);
       res.status(500).json({
+        success: false,
         error: 'Failed to initiate batch call',
         details: error.message
       });
@@ -205,7 +184,6 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
         .orderBy('timestamp', 'desc')
         .limit(50)
         .get();
-
       const submissions = [];
       snapshot.forEach(doc => {
         submissions.push({
@@ -213,7 +191,6 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
           ...doc.data()
         });
       });
-
       res.status(200).json({
         success: true,
         count: submissions.length,
@@ -222,6 +199,7 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
     } catch (error) {
       console.error('Get submissions error:', error);
       res.status(500).json({
+        success: false,
         error: 'Failed to retrieve submissions',
         details: error.message
       });
