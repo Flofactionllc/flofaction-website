@@ -1,12 +1,127 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
+const nodemailer = require('nodemailer');
 const axios = require('axios');
 
 admin.initializeApp();
 
 const GEMINI_API_KEY = 'AlzaSyAIfXpcGndNb2dNHs07_QcAi6Od37_DACw';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
+
+// Gmail SMTP Configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'flofactionllc@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD || 'nucv fyic nouc hdka'
+  }
+});
+
+// Submit Intake Form Handler - Routes to service-type specific inboxes and SENDS EMAIL
+exports.submitIntake = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    try {
+      const { serviceType, firstName, lastName, email, phone, contactPreference, message, timestamp, submittedFrom } = req.body;
+      
+      // Validation
+      if (!serviceType || !firstName || !email) {
+        return res.status(400).json({ error: 'Service type, first name, and email are required' });
+      }
+      
+      // Service-type to email mapping
+      const serviceTypeRouting = {
+        // Insurance & Finance Services -> flofaction.insurance
+        'waterfall': 'flofaction.insurance@gmail.com',
+        'banking': 'flofaction.insurance@gmail.com',
+        'life-insurance': 'flofaction.insurance@gmail.com',
+        'wealth-management': 'flofaction.insurance@gmail.com',
+        'legacy-planning': 'flofaction.insurance@gmail.com',
+        
+        // Business services -> flofaction.business
+        'healthcare': 'flofaction.business@gmail.com',
+        'travel': 'flofaction.business@gmail.com',
+        'real-estate': 'flofaction.business@gmail.com',
+        'tax': 'flofaction.business@gmail.com',
+        'retirement': 'flofaction.business@gmail.com',
+        
+        // Creative Services -> flofaction.business
+        'web-dev': 'flofaction.business@gmail.com',
+        'music': 'flofaction.business@gmail.com',
+        'videography': 'flofaction.business@gmail.com',
+        'portfolio': 'flofaction.business@gmail.com',
+        
+        // Emergency -> flofaction.insurance
+        'emergency': 'flofaction.insurance@gmail.com'
+      };
+      
+      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.business@gmail.com';
+      
+      // Create email content
+      const emailContent = `
+        New Intake Form Submission
+        
+        Service Type: ${serviceType}
+        Name: ${firstName} ${lastName}
+        Email: ${email}
+        Phone: ${phone || 'Not provided'}
+        Date of Birth: ${req.body.dateOfBirth || 'Not provided'}
+        Preferred Contact: ${contactPreference || 'Email'}
+        
+        Message/Details:
+        ${message || 'No additional details provided'}
+        
+        Submitted From: ${submittedFrom || 'Unknown'}
+        Timestamp: ${new Date().toISOString()}
+      `;
+      
+      // Send email to recipient
+      const mailOptions = {
+        from: 'flofactionllc@gmail.com',
+        to: recipientEmail,
+        subject: `New ${serviceType} Intake Form - ${firstName} ${lastName}`,
+        text: emailContent,
+        replyTo: email
+      };
+      
+      // Send the email
+      await transporter.sendMail(mailOptions);
+      
+      // Store submission in Firestore
+      await admin.firestore().collection('intakeSubmissions').add({
+        serviceType,
+        firstName,
+        lastName,
+        email,
+        phone: phone || '',
+        contactPreference: contactPreference || 'email',
+        message: message || '',
+        submittedFrom: submittedFrom || '',
+        recipientEmail,
+        emailSent: true,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'new',
+        readAt: null
+      });
+      
+      res.status(200).json({
+        success: true,
+        message: 'Intake form submitted successfully and email sent',
+        recipientEmail
+      });
+    } catch (error) {
+      console.error('Intake submission error:', error);
+      res.status(500).json({
+        error: 'Failed to process intake form',
+        details: error.message
+      });
+    }
+  });
+});
 
 // Contact Form Handler
 exports.contact = functions.https.onRequest((req, res) => {
@@ -17,12 +132,10 @@ exports.contact = functions.https.onRequest((req, res) => {
 
     try {
       const { email, message, name } = req.body;
-      // Validation
       if (!email || !message) {
         return res.status(400).json({ error: 'Email and message required' });
       }
 
-      // Store in Firestore
       await admin.firestore().collection('contacts').add({
         email,
         message,
@@ -30,18 +143,6 @@ exports.contact = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         status: 'new'
       });
-
-      // Send to Gemini for processing (optional)
-      const geminiResponse = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          contents: [{
-            parts: [{
-              text: `Process this customer inquiry: ${message}`
-            }]
-          }]
-        }
-      );
 
       res.status(200).json({
         success: true,
@@ -71,7 +172,6 @@ exports.batchCall = functions.https.onRequest((req, res) => {
         return res.status(400).json({ error: 'Phone number and agent ID required' });
       }
 
-      // Create batch call record
       const callRecord = await admin.firestore().collection('batch_calls').add({
         phoneNumber,
         name: name || 'Unknown',
@@ -82,8 +182,6 @@ exports.batchCall = functions.https.onRequest((req, res) => {
         recordingUrl: ''
       });
 
-      // Trigger ElevenLabs call (would integrate with their API)
-      // This is a placeholder for actual ElevenLabs integration
       res.status(200).json({
         success: true,
         message: 'Batch call initiated',
@@ -125,80 +223,6 @@ exports.getSubmissions = functions.https.onRequest((req, res) => {
       console.error('Get submissions error:', error);
       res.status(500).json({
         error: 'Failed to retrieve submissions',
-        details: error.message
-      });
-    }
-  });
-});
-
-// Submit Intake Form Handler - Routes to service-type specific inboxes
-exports.submitIntake = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    try {
-      const { serviceType, firstName, lastName, email, phone, contactPreference, message, timestamp, submittedFrom } = req.body;
-      
-      // Validation
-      if (!serviceType || !firstName || !email) {
-        return res.status(400).json({ error: 'Service type, first name, and email are required' });
-      }
-      
-      // Service-type to email mapping - routes to business or insurance
-      const serviceTypeRouting = {
-        // Insurance & Finance Services -> flofaction.insurance
-        'waterfall': 'flofaction.insurance@gmail.com',
-        'banking': 'flofaction.insurance@gmail.com',
-        'life-insurance': 'flofaction.insurance@gmail.com',
-        'wealth-management': 'flofaction.insurance@gmail.com',
-        'legacy-planning': 'flofaction.insurance@gmail.com',
-        
-        // Services -> flofaction.business
-        'healthcare': 'flofaction.business@gmail.com',
-        'travel': 'flofaction.business@gmail.com',
-        'real-estate': 'flofaction.business@gmail.com',
-        'tax': 'flofaction.business@gmail.com',
-        'retirement': 'flofaction.business@gmail.com',
-        
-        // Creative Services -> flofaction.business
-        'web-dev': 'flofaction.business@gmail.com',
-        'music': 'flofaction.business@gmail.com',
-        'videography': 'flofaction.business@gmail.com',
-        'portfolio': 'flofaction.business@gmail.com',
-        
-        // Emergency -> flofaction.insurance
-        'emergency': 'flofaction.insurance@gmail.com'
-      };
-      
-      const recipientEmail = serviceTypeRouting[serviceType] || 'flofaction.business@gmail.com';
-      
-      // Store submission in Firestore
-      await admin.firestore().collection('intakeSubmissions').add({
-        serviceType,
-        firstName,
-        lastName,
-        email,
-        phone: phone || '',
-        contactPreference: contactPreference || 'email',
-        message: message || '',
-        submittedFrom: submittedFrom || '',
-        recipientEmail,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'new',
-        readAt: null
-      });
-      
-      res.status(200).json({
-        success: true,
-        message: 'Intake form submitted successfully',
-        recipientEmail
-      });
-    } catch (error) {
-      console.error('Intake submission error:', error);
-      res.status(500).json({
-        error: 'Failed to process intake form',
         details: error.message
       });
     }
