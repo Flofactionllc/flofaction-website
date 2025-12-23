@@ -269,6 +269,9 @@
                 <option value="emergency">Emergency Consultation</option>
               </optgroup>
             </select>
+                                <div id="serviceDescription" style="margin-top: 15px; padding: 15px; background: #f0f4ff; border-left: 4px solid #667eea; border-radius: 4px; display: none;">
+                        <p id="descriptionText" style="color: #333; font-size: 14px; line-height: 1.6; margin: 0;"></p>
+                    </div>
           </div>
 
           <div class="form-row">
@@ -356,6 +359,35 @@
     const errorMessage = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorText');
 
+     const serviceType = document.getElementById('serviceType');
+ const descriptions = {
+   waterfall: 'Build generational wealth through strategic waterfall strategies. Understand how to structure assets for maximum family benefit across multiple generations.',
+   banking: 'Explore infinite banking solutions that allow you to become your own banker. Learn how to leverage banking strategies for financial flexibility and growth.',
+   'life-insurance': 'Protect your family with comprehensive life insurance coverage. Our experts help you find the right protection for your needs and budget.',
+   'wealth-management': 'Comprehensive wealth management services to grow and protect your assets. Let us help you achieve your financial goals with a tailored strategy.',
+   'legacy-planning': 'Plan your legacy and ensure your values and assets transfer smoothly to the next generation. Create a lasting impact.',
+   healthcare: 'Healthcare planning services to protect your health and finances. Navigate insurance options and healthcare savings strategies.',
+   travel: 'Professional travel planning services. Let us help you plan your perfect getaway with expert guidance.',
+   'real-estate': 'Real estate investment and planning services. Build wealth through strategic property management and investment.',
+   tax: 'Tax planning and optimization strategies to minimize your tax burden and maximize your returns.',
+   retirement: 'Comprehensive retirement planning to ensure financial security in your golden years. Start planning today.',
+   'web-dev': 'Professional web development services to build your online presence. Create a stunning website for your business.',
+   music: 'Music production services for artists and creators. Bring your music vision to life with professional expertise.',
+   videography: 'Professional videography services for events, businesses, and creative projects. Capture your story beautifully.',
+   portfolio: 'Portfolio development services for creatives. Build a professional portfolio that showcases your best work.',
+   emergency: 'Emergency consultation services available when you need immediate guidance. Fast, expert advice.'
+ };
+
+ serviceType.addEventListener('change', (e) => {
+   const desc = document.getElementById('serviceDescription');
+   const descText = document.getElementById('descriptionText');
+   if (e.target.value && descriptions[e.target.value]) {
+     descText.textContent = descriptions[e.target.value];
+     desc.style.display = 'block';
+   } else {
+     desc.style.display = 'none';
+   }
+ });
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       successMessage.style.display = 'none';
