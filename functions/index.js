@@ -1,13 +1,26 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
-const axios = require('axios');
+const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
-const GEMINI_API_KEY = 'AlzaSyAIfXpcGndNb2dNHs07_QcAi6Od37_DACw';
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
-const WEBHOOK_URL = process.env.WEBHOOK_URL || '';
+// Gmail SMTP configuration using app passwords
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'flofaction.insurance@gmail.com',
+    pass: 'nuio kske xhaf dihi'
+  }
+});
+
+const businessTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'flofaction.business@gmail.com',
+    pass: 'ryki ftcc juqx xqvr'
+  }
+});
 
 // Submit Intake Form Handler
 exports.submitIntake = functions.https.onRequest((req, res) => {
@@ -15,12 +28,13 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
     if (req.method !== 'POST') {
       return res.status(405).json({ success: false, error: 'Method not allowed' });
     }
+    
     try {
       const { serviceType, firstName, lastName, email, phone, dateOfBirth, contactPreference, message, submittedFrom } = req.body;
       
       // Validation
-      if (!serviceType || !firstName || !email) {
-        return res.status(400).json({ success: false, error: 'Service type, first name, and email are required' });
+      if (!serviceType || !firstName || !lastName || !email) {
+        return res.status(400).json({ success: false, error: 'Service type, first name, last name, and email are required' });
       }
       
       // Store in Firestore
@@ -34,158 +48,68 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         contactPreference: contactPreference || 'email',
         message: message || '',
         submittedFrom: submittedFrom || '',
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'new'
+        submittedAt: admin.firestore.FieldValue.serverTimestamp(),
+        ipAddress: req.ip || 'unknown'
       });
       
-      // Send email notification via webhook (non-blocking)
-      if (WEBHOOK_URL) {
-        const emailContent = `
-New Intake Form Submission
-
-Service Type: ${serviceType}
-First Name: ${firstName}
-Last Name: ${lastName}
-Email: ${email}
-Phone: ${phone || 'N/A'}
-Date of Birth: ${dateOfBirth || 'N/A'}
-Preferred Contact Method: ${contactPreference || 'Email'}
-
-Message:
-${message || 'No message provided'}
-
-Submitted From: ${submittedFrom || 'Unknown'}
-Submission ID: ${doc.id}
-        `;
-        
-        try {
-          await axios.post(WEBHOOK_URL, {
-            to: 'flofaction.business@gmail.com',
-            subject: `New Intake Form Submission - ${firstName} ${lastName}`,
-            text: emailContent
-          }, { timeout: 5000 });
-        } catch (webhookError) {
-          console.error('Webhook notification error:', webhookError.message);
-        }
-      }
+      // Email content
+      const emailContent = `
+        <h2>New Client Intake Submission</h2>
+        <p><strong>Submission ID:</strong> ${doc.id}</p>
+        <p><strong>Service Type:</strong> ${serviceType}</p>
+        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+        <p><strong>Date of Birth:</strong> ${dateOfBirth || 'Not provided'}</p>
+        <p><strong>Preferred Contact Method:</strong> ${contactPreference || 'Email'}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message || 'No message provided'}</p>
+        <p><strong>Submitted From:</strong> ${submittedFrom || 'Unknown'}</p>
+        <p><strong>Submitted At:</strong> ${new Date().toISOString()}</p>
+      `;
       
-      return res.status(200).json({
-        success: true,
-        message: 'Intake form submitted successfully',
-        docId: doc.id
+      // Send emails to both accounts
+      const mailOptions = {
+        from: 'flofaction.insurance@gmail.com',
+        to: email,
+        cc: 'flofaction.business@gmail.com',
+        subject: `Flo Faction - Intake Form Submission Confirmation - ${serviceType}`,
+        html: `
+          <h2>Thank You for Your Submission</h2>
+          <p>Dear ${firstName},</p>
+          <p>We have received your intake form submission. Our team will review your information and contact you shortly.</p>
+          <hr>
+          <h3>Your Submission Details:</h3>
+          ${emailContent}
+          <hr>
+          <p>Best regards,<br/>Flo Faction Team</p>
+        `
+      };
+      
+      const adminMailOptions = {
+        from: 'flofaction.insurance@gmail.com',
+        to: 'flofaction.insurance@gmail.com',
+        bcc: 'flofaction.business@gmail.com',
+        subject: `[NEW CLIENT] ${firstName} ${lastName} - ${serviceType}`,
+        html: emailContent
+      };
+      
+      // Send confirmation email to client
+      await transporter.sendMail(mailOptions);
+      
+      // Send notification to admin
+      await transporter.sendMail(adminMailOptions);
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Form submitted successfully. Check your email for confirmation.',
+        submissionId: doc.id
       });
     } catch (error) {
-      console.error('Intake submission error:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to process intake form',
-        details: error.message
-      });
-    }
-  });
-});
-
-// Contact Form Handler
-exports.contact = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ success: false, error: 'Method not allowed' });
-    }
-    try {
-      const { email, message, name } = req.body;
-      if (!email || !message) {
-        return res.status(400).json({ success: false, error: 'Email and message required' });
-      }
-      
-      await admin.firestore().collection('contacts').add({
-        email,
-        message,
-        name: name || 'Anonymous',
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'new'
-      });
-      
-      res.status(200).json({
-        success: true,
-        message: 'Contact form submitted successfully'
-      });
-    } catch (error) {
-      console.error('Contact error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to process contact form',
-        details: error.message
-      });
-    }
-  });
-});
-
-// Batch Call Handler
-exports.batchCall = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ success: false, error: 'Method not allowed' });
-    }
-    try {
-      const { phoneNumber, name, email, agentId } = req.body;
-      if (!phoneNumber || !agentId) {
-        return res.status(400).json({ success: false, error: 'Phone number and agent ID required' });
-      }
-      
-      const callRecord = await admin.firestore().collection('batch_calls').add({
-        phoneNumber,
-        name: name || 'Unknown',
-        email: email || '',
-        agentId,
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'initiated',
-        recordingUrl: ''
-      });
-      
-      res.status(200).json({
-        success: true,
-        message: 'Batch call initiated',
-        callId: callRecord.id
-      });
-    } catch (error) {
-      console.error('Batch call error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to initiate batch call',
-        details: error.message
-      });
-    }
-  });
-});
-
-// Get Submissions Handler
-exports.getSubmissions = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
-    try {
-      const snapshot = await admin.firestore().collection('contacts')
-        .orderBy('timestamp', 'desc')
-        .limit(50)
-        .get();
-      
-      const submissions = [];
-      snapshot.forEach(doc => {
-        submissions.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      });
-      
-      res.status(200).json({
-        success: true,
-        count: submissions.length,
-        data: submissions
-      });
-    } catch (error) {
-      console.error('Get submissions error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve submissions',
-        details: error.message
+      console.error('Error submitting form:', error);
+      return res.status(500).json({ 
+        success: false, 
+        error: error.message || 'Error processing form submission'
       });
     }
   });
