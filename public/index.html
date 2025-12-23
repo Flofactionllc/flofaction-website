@@ -25,8 +25,6 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      flex-wrap: wrap;
-      gap: 1rem;
     }
     .logo {
       font-size: 1.5rem;
@@ -35,28 +33,23 @@
     .logo a {
       color: #fff;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
     nav ul {
       display: flex;
       list-style: none;
-      gap: 1.5rem;
-      flex-wrap: wrap;
+      gap: 2rem;
     }
     nav a {
       color: #fff;
       text-decoration: none;
       transition: color 0.3s;
-      font-size: 0.95rem;
+      position: relative;
     }
     nav a:hover {
       color: #64c8ff;
     }
     .nav-dropdown {
       position: relative;
-      display: inline-block;
     }
     .dropdown-menu {
       display: none;
@@ -65,20 +58,24 @@
       top: 100%;
       left: 0;
       flex-direction: column;
-      gap: 0.5rem;
       padding: 0.5rem 0;
-      border: 1px solid rgba(100,200,255,0.2);
+      border: 1px solid rgba(100,200,255,0.3);
       border-radius: 6px;
-      min-width: 200px;
+      min-width: 220px;
       margin-top: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     .dropdown-menu a {
-      padding: 0.6rem 1.5rem;
+      padding: 0.7rem 1.5rem;
       display: block;
       white-space: nowrap;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
     }
     .dropdown-menu a:hover {
-      background: rgba(100,200,255,0.1);
+      background: rgba(100,200,255,0.15);
+      color: #64c8ff;
     }
     .nav-dropdown:hover .dropdown-menu {
       display: flex;
@@ -133,7 +130,7 @@
     }
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
       gap: 2rem;
       max-width: 1200px;
       margin: 0 auto;
@@ -159,11 +156,35 @@
       margin-bottom: 1rem;
       font-size: 1.5rem;
     }
-    .service-card p {
-      color: #ccc;
+    .intake-section {
+      padding: 4rem 2rem;
+      background: rgba(30,40,50,0.3);
+      text-align: center;
+    }
+    .intake-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #64c8ff;
+    }
+    .intake-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #00ff88, #64c8ff);
+      color: #000;
+      padding: 1.2rem 2.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .intake-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0,255,136,0.3);
     }
     footer {
-      padding: 2rem;
+      padding: 3rem 2rem;
       text-align: center;
       background: #0a0f15;
       border-top: 1px solid rgba(100,200,255,0.2);
@@ -172,15 +193,12 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    .footer-section {
-      margin: 1rem 0;
-    }
     .footer-links {
       display: flex;
       justify-content: center;
       gap: 2rem;
       flex-wrap: wrap;
-      margin: 1rem 0;
+      margin-top: 1.5rem;
     }
     .footer-links a {
       color: #64c8ff;
@@ -206,12 +224,12 @@
           <a href="web-development.html">Web Development</a>
           <a href="creative-services.html">Creative Services</a>
           <a href="healthcare.html">Healthcare Planning</a>
-          <a href="legacy.html">Legacy Planning</a>
-          <a href="music.html">Music Production</a>
-          <a href="real-estate.html">Real Estate</a>
           <a href="retirement.html">Retirement Planning</a>
+          <a href="legacy.html">Legacy Planning</a>
           <a href="tax.html">Tax Planning</a>
           <a href="travel.html">Travel Planning</a>
+          <a href="real-estate.html">Real Estate</a>
+          <a href="music.html">Music Production</a>
           <a href="videography.html">Videography</a>
           <a href="emergency-management.html">Emergency Management</a>
           <a href="portfolio.html">Portfolio</a>
@@ -242,7 +260,7 @@
         <h3>Creative Services</h3>
         <p>Professional video production, music production, photography, animation, and multimedia content creation for your brand.</p>
       </a>
-      <a href="#" class="service-card" onclick="openAIAgent('insurance')">
+      <a href="intake.html" class="service-card">
         <h3>AI Solutions</h3>
         <p>Custom AI automation, intelligent chatbots, voice agents, machine learning solutions, and business process automation.</p>
       </a>
@@ -265,14 +283,18 @@
     </div>
   </section>
 
+  <section class="intake-section">
+    <h2>Ready to Get Started?</h2>
+    <p style="margin-bottom: 2rem; color: #ccc;">Let's discuss your business needs and create the perfect solution for you.</p>
+    <a href="intake.html" class="intake-button">Start Your Intake Form</a>
+  </section>
+
   <footer id="contact">
     <div class="footer-content">
-      <div class="footer-section">
+      <div>
         <p><strong>Flo Faction LLC - Complete Business Solutions</strong></p>
-        <p>© 2025 Flo Faction LLC. All rights reserved.</p>
-      </div>
-      <div class="footer-section">
-        <p>Transforming businesses with technology and innovation.</p>
+        <p style="margin-top: 0.5rem; color: #999;">© 2025 Flo Faction LLC. All rights reserved.</p>
+        <p style="margin-top: 1rem; color: #ccc;">Transforming businesses with technology and innovation.</p>
       </div>
       <div class="footer-links">
         <a href="intake.html">Get Started</a>
@@ -282,7 +304,6 @@
     </div>
   </footer>
 
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-4EK9FLOFAC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -291,25 +312,17 @@
     gtag('config', 'G-4EK9FLOFAC');
   </script>
 
-  <!-- ElevenLabs Voice Agent Widget -->
   <script async src="https://elevenlabs.io/convai-widget/index.js"></script>
   <script>
-    function openAIAgent(serviceType) {
-      const agents = {
-        'insurance': 'agent_41O1kcageta4eqh970hcgxqcp7m1',
-        'default': 'agent_41O1kcageta4eqh970hcgxqcp7m1'
-      };
-      const agentId = agents[serviceType] || agents['default'];
-      if (window.elevenlabs && window.elevenlabs.widget) {
-        window.elevenlabs.widget.Inline({
-          agentId: agentId,
-          buttonText: 'Talk to Flo Agent'
-        });
-      }
+    window.elevenlabs = window.elevenlabs || {};
+    if (window.elevenlabs && window.elevenlabs.widget) {
+      window.elevenlabs.widget.Inline({
+        agentId: "agent_41O1kcageta4eqh970hcgxqcp7m1",
+        buttonText: "Talk to Flo Agent"
+      });
     }
   </script>
 
-  <!-- Router for navigation -->
   <script src="js/router.js"></script>
 </body>
 </html>
