@@ -408,18 +408,28 @@
         timestamp: serverTimestamp()
       };
 
-      try {
-        const docRef = await addDoc(collection(db, 'intakeSubmissions'), payload);
-        console.log('Form submitted successfully with ID:', docRef.id);
+    fetch('https://us-central1-flofaction-website-44132480.cloudfunctions.net/submitIntake', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
         successMessage.style.display = 'block';
         form.reset();
         successMessage.scrollIntoView({ behavior: 'smooth' });
-      } catch (error) {
-        console.error('Form submission error:', error);
-        errorText.textContent = error.message || 'There was an error submitting your form. Please try again.';
+      } else {
+        errorText.textContent = data.error || 'There was an error submitting your form. Please try again.';
         errorMessage.style.display = 'block';
       }
-    });
-  </script>
+    })
+    .catch(error => {
+      console.error('Form submission error:', error);
+      errorText.textContent = error.message || 'There was an error submitting your form. Please try again.';
+      errorMessage.style.display = 'block';
+    })  </script>
 </body>
 </html>
