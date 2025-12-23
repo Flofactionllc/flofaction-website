@@ -2,23 +2,12 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const axios = require('axios');
-const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
 const GEMINI_API_KEY = 'AlzaSyAIfXpcGndNb2dNHs07_QcAi6Od37_DACw';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || '';
-
-// Gmail SMTP Configuration
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'flofactionllc@gmail.com',
-    pass: 'nucv fyic nouc hdka'
-  }
-});
+const WEBHOOK_URL = process.env.WEBHOOK_URL || '';
 
 // Submit Intake Form Handler
 exports.submitIntake = functions.https.onRequest((req, res) => {
@@ -49,8 +38,9 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         status: 'new'
       });
       
-      // Send email notification to company
-      const emailContent = `
+      // Send email notification via webhook (non-blocking)
+      if (WEBHOOK_URL) {
+        const emailContent = `
 New Intake Form Submission
 
 Service Type: ${serviceType}
@@ -66,17 +56,17 @@ ${message || 'No message provided'}
 
 Submitted From: ${submittedFrom || 'Unknown'}
 Submission ID: ${doc.id}
-      `;
-      
-      try {
-        await transporter.sendMail({
-          from: 'flofactionllc@gmail.com',
-          to: 'flofaction.business@gmail.com',
-          subject: `New Intake Form Submission - ${firstName} ${lastName}`,
-          text: emailContent
-        });
-      } catch (emailError) {
-        console.error('Email sending error:', emailError);
+        `;
+        
+        try {
+          await axios.post(WEBHOOK_URL, {
+            to: 'flofaction.business@gmail.com',
+            subject: `New Intake Form Submission - ${firstName} ${lastName}`,
+            text: emailContent
+          }, { timeout: 5000 });
+        } catch (webhookError) {
+          console.error('Webhook notification error:', webhookError.message);
+        }
       }
       
       return res.status(200).json({
