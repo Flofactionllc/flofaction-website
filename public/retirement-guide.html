@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Retirement Planning Guide - FloFaction</title>
+    <meta name="description" content="Expert retirement planning guide with AI-powered tools, calculators, and personalized strategies. Secure your financial future with FloFaction's comprehensive guide.">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/insurance.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>FloFaction</h1>
+                <span class="tagline">Retirement Planning Experts</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/insurance.html">Insurance</a></li>
+                    <li><a class="active" href="/retirement-guide.html">Retirement Guide</a></li>
+                    <li><a href="/young-professionals-guide.html">Young Professionals</a></li>
+                    <li><a href="/contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="insurance-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>📊 Comprehensive Retirement Planning Guide</h1>
+                    <p class="hero-subtitle">Secure Your Future with AI-Powered Retirement Strategies</p>
+                    <p>Expert guidance, personalized plans, and powerful tools to ensure a comfortable retirement</p>
+                    <div class="cta-buttons">
+                        <a href="#calculator" class="btn btn-primary">Retirement Calculator</a>
+                        <a href="#download" class="btn btn-secondary">Download Full Guide - $29.99</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <h2>What's Inside This Comprehensive Guide</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>💰 Wealth Accumulation Strategies</h3>
+                        <p>Proven investment strategies for building retirement wealth across all life stages.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📈 Portfolio Management</h3>
+                        <p>Asset allocation strategies optimized for your age, risk tolerance, and goals.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💳 Tax-Advantaged Accounts</h3>
+                        <p>Maximize 401(k), IRA, Roth IRA, and HSA contributions for tax efficiency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🏛️ Social Security Optimization</h3>
+                        <p>When to claim benefits for maximum lifetime income.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🏥 Healthcare Planning</h3>
+                        <p>Medicare, long-term care insurance, and medical expense planning.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💵 Income Strategies</h3>
+                        <p>Creating sustainable retirement income streams that last a lifetime.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calculator-section" id="calculator">
+            <div class="container">
+                <h2>AI-Powered Retirement Calculator</h2>
+                <div class="calculator-card">
+                    <div class="calculator-inputs">
+                        <div class="input-group">
+                            <label for="currentAge">Current Age</label>
+                            <input type="number" id="currentAge" min="18" max="99" value="35" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="retirementAge">Retirement Age</label>
+                            <input type="number" id="retirementAge" min="19" max="100" value="65" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="currentSavings">Current Savings ($)</label>
+                            <input type="number" id="currentSavings" min="0" value="50000" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="monthlyContribution">Monthly Contribution ($)</label>
+                            <input type="number" id="monthlyContribution" min="0" value="500" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="returnRate">Expected Annual Return (%)</label>
+                            <input type="number" id="returnRate" min="0" max="20" step="0.1" value="7" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="desiredIncome">Desired Monthly Retirement Income ($)</label>
+                            <input type="number" id="desiredIncome" min="0" value="5000" required>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateRetirement()">Calculate My Retirement Plan</button>
+                    <div class="calculator-results" id="calculatorResults"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section guide-preview">
+            <div class="container">
+                <h2>Guide Chapters Preview</h2>
+                <div class="chapters-list">
+                    <div class="chapter">
+                        <h3>Chapter 1: Starting Your Retirement Journey</h3>
+                        <p>Foundation principles, goal setting, and creating your personalized retirement roadmap.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 2: Investment Strategies by Life Stage</h3>
+                        <p>Age-appropriate asset allocation from your 20s through retirement.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 3: Maximizing Tax-Advantaged Accounts</h3>
+                        <p>401(k), IRA, Roth conversions, HSAs, and tax-efficient withdrawal strategies.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 4: Social Security Mastery</h3>
+                        <p>Claiming strategies, spousal benefits, and maximizing lifetime income.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 5: Healthcare in Retirement</h3>
+                        <p>Medicare parts A-D, Medigap, prescription coverage, and long-term care.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 6: Creating Retirement Income Streams</h3>
+                        <p>Pensions, annuities, dividend strategies, and systematic withdrawals.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 7: Risk Management & Insurance</h3>
+                        <p>Life insurance, disability, long-term care, and estate protection.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 8: Estate Planning Essentials</h3>
+                        <p>Wills, trusts, beneficiary designations, and legacy planning.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 9: Living in Retirement</h3>
+                        <p>Lifestyle planning, housing decisions, part-time work, and staying active.</p>
+                    </div>
+                    <div class="chapter">
+                        <h3>Chapter 10: Advanced Strategies</h3>
+                        <p>Backdoor Roth, mega backdoor, tax-loss harvesting, and sophisticated planning.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="purchase-section" id="download">
+            <div class="container">
+                <h2>Get the Complete Retirement Planning Guide</h2>
+                <div class="pricing-card featured">
+                    <h3>Complete Digital Guide</h3>
+                    <div class="price">$29.99</div>
+                    <ul class="features-list">
+                        <li>✅ 200+ page comprehensive guide</li>
+                        <li>✅ Downloadable worksheets & calculators</li>
+                        <li>✅ Video tutorials & case studies</li>
+                        <li>✅ Lifetime access & updates</li>
+                        <li>✅ Personalized action plans</li>
+                        <li>✅ Expert Q&A access</li>
+                        <li>✅ 30-day money-back guarantee</li>
+                    </ul>
+                    <button class="btn btn-primary btn-large" onclick="addToCart('retirement-guide', 'Complete Retirement Planning Guide', 29.99)">Add to Cart - $29.99</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials-section">
+            <div class="container">
+                <h2>Success Stories</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial">
+                        <p>"This guide helped me increase my retirement savings by 40% through smart tax strategies. Worth every penny!"</p>
+                        <strong>- Michael T., Age 42</strong>
+                    </div>
+                    <div class="testimonial">
+                        <p>"Clear, actionable advice that I could implement immediately. My retirement plan is finally on track."</p>
+                        <strong>- Sarah L., Age 38</strong>
+                    </div>
+                    <div class="testimonial">
+                        <p>"The Social Security optimization chapter alone saved me over $50,000 in lifetime benefits!"</p>
+                        <strong>- Robert K., Age 61</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 FloFaction. All rights reserved. <a href="/privacy.html">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function calculateRetirement() {
+            const currentAge = parseInt(document.getElementById('currentAge').value);
+            const retirementAge = parseInt(document.getElementById('retirementAge').value);
+            const currentSavings = parseFloat(document.getElementById('currentSavings').value);
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+            const returnRate = parseFloat(document.getElementById('returnRate').value) / 100;
+            const desiredIncome = parseFloat(document.getElementById('desiredIncome').value);
+
+            const yearsToRetirement = retirementAge - currentAge;
+            const monthsToRetirement = yearsToRetirement * 12;
+            const monthlyRate = returnRate / 12;
+
+            const futureValueOfCurrentSavings = currentSavings * Math.pow((1 + monthlyRate), monthsToRetirement);
+            const futureValueOfContributions = monthlyContribution * ((Math.pow((1 + monthlyRate), monthsToRetirement) - 1) / monthlyRate);
+            const totalRetirementSavings = futureValueOfCurrentSavings + futureValueOfContributions;
+            const requiredSavings = (desiredIncome * 12) / 0.04;
+            const shortfall = requiredSavings - totalRetirementSavings;
+            const onTrack = shortfall <= 0;
+            const estimatedMonthlyIncome = (totalRetirementSavings * 0.04) / 12;
+
+            let resultsHTML = `
+                <h3>Your Retirement Projection</h3>
+                <div class="result-item"><strong>Years to Retirement:</strong> ${yearsToRetirement} years</div>
+                <div class="result-item"><strong>Projected Retirement Savings:</strong> $${totalRetirementSavings.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                <div class="result-item"><strong>Required for Desired Income:</strong> $${requiredSavings.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+                <div class="result-item ${onTrack ? 'success' : 'warning'}"><strong>Status:</strong> ${onTrack ? '✅ On Track!' : '⚠️ Adjustment Needed'}</div>
+            `;
+
+            if (!onTrack) {
+                const monthlyIncreaseNeeded = (requiredSavings - totalRetirementSavings) / ((Math.pow((1 + monthlyRate), monthsToRetirement) - 1) / monthlyRate);
+                resultsHTML += `<div class="result-item warning"><strong>Monthly Contribution Increase Needed:</strong> $${Math.ceil(monthlyIncreaseNeeded).toLocaleString('en-US')} per month</div>`;
+            }
+
+            resultsHTML += `<div class="result-item"><strong>Estimated Monthly Retirement Income:</strong> $${Math.floor(estimatedMonthlyIncome).toLocaleString('en-US')}</div>`;
+
+            document.getElementById('calculatorResults').innerHTML = resultsHTML;
+        }
+
+        function addToCart(productId, productName, price) {
+            const cart = JSON.parse(localStorage.getItem('floFactionCart') || '[]');
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            localStorage.setItem('floFactionCart', JSON.stringify(cart));
+            alert(`Added "${productName}" to cart for $${price.toFixed(2)}`);
+            window.location.href = '/checkout.html';
+        }
+
+        window.addEventListener('load', function() {
+            calculateRetirement();
+        });
+    </script>
+</body>
+</html>
