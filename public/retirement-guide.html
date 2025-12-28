@@ -10,23 +10,19 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <div class="logo">
-                <h1>FloFaction</h1>
-                <span class="tagline">Retirement Planning Experts</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/insurance.html">Insurance</a></li>
-                    <li><a class="active" href="/retirement-guide.html">Retirement Guide</a></li>
-                    <li><a href="/young-professionals-guide.html">Young Professionals</a></li>
-                    <li><a href="/contact.html">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
+        <nav style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 20px 40px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <a href="/" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #5856d6; font-size: 24px; font-weight: bold;">
+                🚀 <span>Flo Faction</span>
+            </a>
+            <ul style="display: flex; list-style: none; gap: 30px; margin: 0; padding: 0;">
+                <li><a href="/" style="text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#5856d6'" onmouseout="this.style.color='#333'">Home</a></li>
+                <li><a href="/insurance.html" style="text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#5856d6'" onmouseout="this.style.color='#333'">Insurance</a></li>
+                <li><a href="/retirement-guide.html" style="text-decoration: none; color: #5856d6; font-weight: 600;">Retirement Guide</a></li>
+                <li><a href="/young-professionals-guide.html" style="text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#5856d6'" onmouseout="this.style.color='#333'">Young Professionals</a></li>
+                <li><a href="/contact.html" style="text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#5856d6'" onmouseout="this.style.color='#333'">Contact</a></li>
+            </ul>
+        </nav>
     </header>
-
     <main>
         <section class="insurance-hero">
             <div class="container">
@@ -268,5 +264,31 @@
             calculateRetirement();
         });
     </script>
+
+        <footer style="background: #1a1a2e; color: white; padding: 60px 40px 30px; margin-top: 80px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+            <div>
+                <h3 style="margin-bottom: 20px;">Flo Faction Insurance</h3>
+                <p>Licensed Insurance Broker | CCPA Compliant | Serving FL & Beyond</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Quick Links</h4>
+                <p><a href="/" style="color: #8ab4f8; text-decoration: none;">Home</a></p>
+                <p><a href="/insurance.html" style="color: #8ab4f8; text-decoration: none;">Insurance</a></p>
+                <p><a href="/retirement-guide.html" style="color: #8ab4f8; text-decoration: none;">Retirement Guide</a></p>
+                <p><a href="/young-professionals-guide.html" style="color: #8ab4f8; text-decoration: none;">Young Professionals</a></p>
+                <p><a href="/contact.html" style="color: #8ab4f8; text-decoration: none;">Contact</a></p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Contact Info</h4>
+                <p>📧 <a href="mailto:flofaction.business@gmail.com" style="color: #8ab4f8; text-decoration: none;">flofaction.business@gmail.com</a></p>
+                <p>📞 (772) 539-5908</p>
+                <p>📍 Florida, USA</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333;">
+            <p>&copy; 2025 Flo Faction Insurance LLC. Licensed Insurance Broker. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
