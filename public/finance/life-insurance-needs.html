@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate how much life insurance coverage you need based on your financial obligations.">
+    <meta name="keywords" content="life insurance calculator, insurance needs, coverage amount">
+    <meta property="og:title" content="Life Insurance Needs Calculator">
+    <meta property="og:description" content="Calculate your recommended life insurance coverage">
+    <title>Life Insurance Needs Calculator | Flo Faction</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 10px; margin-bottom: 40px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { font-size: 1.1rem; opacity: 0.9; }
+        .calculator-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .form-section, .results-section { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        button { background: #667eea; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.3s; }
+        button:hover { background: #764ba2; }
+        .results-item { padding: 15px; background: #f8f9fa; border-left: 4px solid #667eea; margin-bottom: 15px; border-radius: 5px; }
+        .results-item label { color: #666; font-size: 0.9rem; margin-bottom: 5px; }
+        .results-item value { font-size: 1.5rem; font-weight: bold; color: #667eea; }
+        .recommendation { background: #e3f2fd; border: 2px solid #2196F3; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .recommendation h3 { color: #1976D2; margin-bottom: 10px; }
+        @media (max-width: 768px) { .calculator-wrapper { grid-template-columns: 1fr; } header h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Life Insurance Needs Calculator</h1>
+            <p>Determine your recommended coverage amount based on your financial obligations</p>
+        </header>
+
+        <div class="calculator-wrapper">
+            <div class="form-section">
+                <h2>Your Information</h2>
+                <form id="calculatorForm">
+                    <div class="form-group">
+                        <label for="annualIncome">Annual Income ($)</label>
+                        <input type="number" id="annualIncome" placeholder="Enter annual income" value="80000" min="0" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="yearsSupport">Years of Income to Replace</label>
+                        <input type="number" id="yearsSupport" placeholder="5-25 years" value="20" min="1" max="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="debts">Outstanding Debts ($)</label>
+                        <input type="number" id="debts" placeholder="Mortgage, loans, credit cards" value="250000" min="0" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="childEducation">Children's Education Costs ($)</label>
+                        <input type="number" id="childEducation" placeholder="College costs" value="200000" min="0" step="10000">
+                    </div>
+                    <div class="form-group">
+                        <label for="funeralCosts">Funeral & Final Expenses ($)</label>
+                        <input type="number" id="funeralCosts" placeholder="Typically $10,000-$15,000" value="15000" min="0" step="1000">
+                    </div>
+                    <button type="button" onclick="calculateNeeds()">Calculate Coverage</button>
+                </form>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2>Your Results</h2>
+                <div class="results-item">
+                    <label>Annual Income Needs</label>
+                    <div class="results-item value" id="annualNeedsResult">$0</div>
+                </div>
+                <div class="results-item">
+                    <label>Outstanding Debts</label>
+                    <div class="results-item value" id="debtsResult">$0</div>
+                </div>
+                <div class="results-item">
+                    <label>Education Costs</label>
+                    <div class="results-item value" id="educationResult">$0</div>
+                </div>
+                <div class="results-item">
+                    <label>Funeral & Final Expenses</label>
+                    <div class="results-item value" id="funeralResult">$0</div>
+                </div>
+                <div class="results-item" style="border-left-color: #4CAF50; background: #f1f8f4;">
+                    <label>Recommended Coverage</label>
+                    <div class="results-item value" id="recommendedCoverage" style="color: #4CAF50;">$0</div>
+                </div>
+                <div class="recommendation">
+                    <h3>Our Recommendation</h3>
+                    <p id="recommendationText">Schedule a consultation with our insurance specialists to discuss your specific coverage needs and find the right policy for your situation.</p>
+                    <button onclick="scheduleConsultation()" style="margin-top: 15px; background: #4CAF50;">Schedule Free Consultation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/calculator-logic.js"></script>
+    <script>
+        function calculateNeeds() {
+            const income = parseFloat(document.getElementById('annualIncome').value) || 0;
+            const years = parseFloat(document.getElementById('yearsSupport').value) || 0;
+            const debts = parseFloat(document.getElementById('debts').value) || 0;
+            const education = parseFloat(document.getElementById('childEducation').value) || 0;
+            const funeral = parseFloat(document.getElementById('funeralCosts').value) || 0;
+
+            const result = calculateLifeInsuranceNeeds(income, years, debts, education, funeral);
+            
+            document.getElementById('annualNeedsResult').textContent = '$' + result.annualNeeds.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('debtsResult').textContent = '$' + result.totalDebts.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('educationResult').textContent = '$' + result.educationCosts.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('funeralResult').textContent = '$' + result.otherCosts.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('recommendedCoverage').textContent = '$' + result.recommendedCoverage.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scheduleConsultation() {
+            window.location.href = '/intake.html';
+        }
+    </script>
+</body>
+</html>
