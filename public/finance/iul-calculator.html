@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IUL (Indexed Universal Life) Calculator - Flo Faction</title>
+    <link rel="stylesheet" href="../css/calculator-styles.css">
+    <style>
+        :root {
+            --primary-color: #00A8D8;
+            --secondary-color: #00ACB8;
+            --success-color: #28a745;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #ddd;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,168,216,0.1);
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .calculate-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+        .calculate-btn:hover {
+            background: #0088aa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,168,216,0.3);
+        }
+        .reset-btn {
+            background: #f0f0f0;
+            color: var(--text-dark);
+        }
+        .reset-btn:hover {
+            background: #e0e0e0;
+        }
+        .results-section {
+            display: none;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
+        }
+        .results-section.active {
+            display: block;
+        }
+        .result-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .result-label {
+            font-size: 0.9em;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        .result-value {
+            font-size: 2em;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .info-box {
+            background: #e7f3ff;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+            color: #0c5aa0;
+        }
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IUL Calculator</h1>
+            <p>Indexed Universal Life Insurance Analysis</p>
+        </div>
+        <div class="content">
+            <form id="iulForm" onsubmit="calculateIUL(event)">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label for="age">Your Current Age</label>
+                        <input type="number" id="age" min="18" max="100" required placeholder="Enter your age">
+                    </div>
+                    <div class="input-group">
+                        <label for="desiredCoverage">Desired Coverage Amount ($)</label>
+                        <input type="number" id="desiredCoverage" min="50000" step="50000" required placeholder="e.g., 500000">
+                    </div>
+                    <div class="input-group">
+                        <label for="premiumAmount">Monthly Premium ($)</label>
+                        <input type="number" id="premiumAmount" min="50" step="10" required placeholder="e.g., 300">
+                    </div>
+                    <div class="input-group">
+                        <label for="projectionYears">Projection Years</label>
+                        <input type="number" id="projectionYears" min="1" max="50" value="20" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="creditRate">Index Credit Rate (%)</label>
+                        <input type="number" id="creditRate" min="0" max="100" step="0.1" value="5" required placeholder="Typical: 5-8%">
+                    </div>
+                    <div class="input-group">
+                        <label for="costOfInsurance">Cost of Insurance (COI)</label>
+                        <select id="costOfInsurance" required>
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="calculate-btn">Calculate</button>
+                    <button type="reset" class="reset-btn">Reset</button>
+                </div>
+            </form>
+
+            <div id="results" class="results-section">
+                <h2>Calculation Results</h2>
+                <div class="grid-2">
+                    <div class="result-item">
+                        <div class="result-label">Total Premium Paid</div>
+                        <div class="result-value" id="totalPremium">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Projected Cash Value</div>
+                        <div class="result-value" id="projectedCashValue">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Projected Death Benefit</div>
+                        <div class="result-value" id="projectedDeathBenefit">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Index Performance Impact</div>
+                        <div class="result-value" id="indexPerformance">$0</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>About IUL Insurance:</strong>
+                    <p>Indexed Universal Life (IUL) insurance offers flexibility with death benefit protection tied to market index performance. Your policy can accumulate cash value based on selected index performance while maintaining downside protection.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/calculator-logic.js"></script>
+    <script>
+        function calculateIUL(event) {
+            event.preventDefault();
+            
+            const age = parseInt(document.getElementById('age').value);
+            const desiredCoverage = parseFloat(document.getElementById('desiredCoverage').value);
+            const premiumAmount = parseFloat(document.getElementById('premiumAmount').value);
+            const projectionYears = parseInt(document.getElementById('projectionYears').value);
+            const creditRate = parseFloat(document.getElementById('creditRate').value) / 100;
+            const coiLevel = document.getElementById('costOfInsurance').value;
+            
+            // COI rates based on age and selected level
+            const coiRates = {
+                low: 0.003,
+                medium: 0.005,
+                high: 0.007
+            };
+            
+            const coiRate = coiRates[coiLevel];
+            
+            // Calculations
+            const totalPremiumPaid = premiumAmount * 12 * projectionYears;
+            
+            // Simplified IUL calculation
+            let cashValue = 0;
+            for (let year = 0; year < projectionYears; year++) {
+                cashValue += (premiumAmount * 12) - (desiredCoverage * coiRate);
+                cashValue = Math.max(0, cashValue);
+                cashValue += cashValue * creditRate;
+            }
+            
+            const indexPerformance = cashValue - (totalPremiumPaid);
+            const deathBenefit = Math.max(desiredCoverage, cashValue + desiredCoverage);
+            
+            // Display results
+            document.getElementById('totalPremium').textContent = '$' + totalPremiumPaid.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('projectedCashValue').textContent = '$' + cashValue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('projectedDeathBenefit').textContent = '$' + deathBenefit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('indexPerformance').textContent = '$' + Math.max(0, indexPerformance).toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            document.getElementById('results').classList.add('active');
+        }
+    </script>
+</body>
+</html>
