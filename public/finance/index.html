@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculators - Flo Faction LLC</title>
+    <meta name="description" content="Free financial calculators for retirement planning, life insurance, mortgages, taxes, and more. Make informed financial decisions with Flo Faction.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: rgba(0,0,0,0.2); padding: 20px; text-align: center; }
+        .header h1 { color: white; font-size: 2.5em; margin-bottom: 10px; }
+        .header p { color: rgba(255,255,255,0.9); font-size: 1.2em; }
+        .nav-links { margin-top: 15px; }
+        .nav-links a { color: white; text-decoration: none; margin: 0 15px; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .section-title { color: white; text-align: center; margin-bottom: 30px; font-size: 1.8em; }
+        .calculator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .calc-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); transition: transform 0.3s, box-shadow 0.3s; }
+        .calc-card:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(0,0,0,0.25); }
+        .calc-card .icon { font-size: 2.5em; margin-bottom: 15px; }
+        .calc-card h3 { color: #333; font-size: 1.3em; margin-bottom: 10px; }
+        .calc-card p { color: #666; font-size: 0.95em; line-height: 1.5; margin-bottom: 20px; }
+        .calc-card a { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: opacity 0.3s; }
+        .calc-card a:hover { opacity: 0.9; }
+        .featured { border: 3px solid #00A8D8; position: relative; }
+        .featured::before { content: '⭐ Popular'; position: absolute; top: -12px; left: 20px; background: #00A8D8; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+        .cta-section { background: white; border-radius: 12px; padding: 40px; text-align: center; margin-top: 50px; }
+        .cta-section h2 { color: #333; margin-bottom: 15px; }
+        .cta-section p { color: #666; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .cta-buttons a { padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .cta-primary { background: #00A8D8; color: white; }
+        .cta-secondary { background: #f0f0f0; color: #333; }
+        .footer { text-align: center; padding: 30px; color: rgba(255,255,255,0.8); }
+        .footer a { color: white; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .nav-links a { display: block; margin: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💰 Financial Calculators</h1>
+        <p>Free tools to help you make smarter financial decisions</p>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/insurance">Insurance</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="section-title">Insurance & Protection Calculators</h2>
+        <div class="calculator-grid">
+            <div class="calc-card featured">
+                <div class="icon">🛡️</div>
+                <h3>Life Insurance Needs Calculator</h3>
+                <p>Determine how much life insurance coverage you need to protect your family based on income, debts, and future goals.</p>
+                <a href="/finance/life-insurance-needs.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">📋</div>
+                <h3>Term Life Calculator</h3>
+                <p>Compare term life insurance options and estimate premiums based on your age, health, and coverage needs.</p>
+                <a href="/finance/term-life-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">🏦</div>
+                <h3>Whole Life Calculator</h3>
+                <p>Explore permanent life insurance with cash value accumulation and lifetime coverage benefits.</p>
+                <a href="/finance/whole-life-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">📈</div>
+                <h3>IUL Calculator</h3>
+                <p>Indexed Universal Life insurance projections with market-linked growth potential and downside protection.</p>
+                <a href="/finance/iul-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">🩺</div>
+                <h3>Disability Insurance Calculator</h3>
+                <p>Calculate income protection needs if you become unable to work due to illness or injury.</p>
+                <a href="/finance/disability-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">✅</div>
+                <h3>Insurance Needs Assessment</h3>
+                <p>Comprehensive analysis of all your insurance needs - life, disability, home, auto, and umbrella coverage.</p>
+                <a href="/finance/insurance-assessment-calculator.html">Get Assessment →</a>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 50px;">Retirement & Investment Calculators</h2>
+        <div class="calculator-grid">
+            <div class="calc-card featured">
+                <div class="icon">🎯</div>
+                <h3>Retirement Calculator</h3>
+                <p>Plan your retirement with projections for savings growth, Social Security, and income needs.</p>
+                <a href="/finance/retirement-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">💹</div>
+                <h3>Investment Return Calculator</h3>
+                <p>Project investment growth with compound interest, regular contributions, and various return scenarios.</p>
+                <a href="/finance/investment-return-calculator.html">Calculate Now →</a>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 50px;">Debt & Tax Calculators</h2>
+        <div class="calculator-grid">
+            <div class="calc-card">
+                <div class="icon">🏠</div>
+                <h3>Mortgage Calculator</h3>
+                <p>Calculate monthly payments, total interest, and compare loan terms for your home purchase or refinance.</p>
+                <a href="/finance/mortgage-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">💳</div>
+                <h3>Debt Consolidation Calculator</h3>
+                <p>See how much you could save by consolidating multiple debts into one lower-interest payment.</p>
+                <a href="/finance/debt-consolidation-calculator.html">Calculate Now →</a>
+            </div>
+            <div class="calc-card">
+                <div class="icon">📊</div>
+                <h3>Tax Planning Calculator</h3>
+                <p>Estimate your tax liability and discover strategies to reduce your tax burden legally.</p>
+                <a href="/finance/tax-planning-calculator.html">Calculate Now →</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Need Personalized Guidance?</h2>
+            <p>Our licensed financial professionals can help you create a comprehensive plan tailored to your unique situation and goals.</p>
+            <div class="cta-buttons">
+                <a href="/contact" class="cta-primary">Schedule Free Consultation</a>
+                <a href="/insurance" class="cta-secondary">Explore Insurance Options</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Flo Faction LLC. All rights reserved. | <a href="/contact">Contact Us</a></p>
+        <p style="margin-top: 10px; font-size: 0.85em;">Calculators are for educational purposes only. Consult a licensed professional for personalized advice.</p>
+    </div>
+</body>
+</html>
