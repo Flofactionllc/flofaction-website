@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Return Calculator - Flo Faction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .reset-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .reset-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Investment Return Calculator</h1>
+        <p class="subtitle">Calculate your potential investment returns</p>
+
+        <form id="investmentForm">
+            <div class="form-group">
+                <label for="initialInvestment">Initial Investment Amount ($)</label>
+                <input type="number" id="initialInvestment" placeholder="50000" min="0" step="0.01" required>
+                <div class="error" id="initialInvestmentError"></div>
+            </div>
+
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="annualContribution">Annual Contribution ($)</label>
+                    <input type="number" id="annualContribution" placeholder="5000" min="0" step="0.01">
+                    <div class="error" id="annualContributionError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="yearsInvestment">Time Period (Years)</label>
+                    <input type="number" id="yearsInvestment" placeholder="20" min="1" max="80" step="1" required>
+                    <div class="error" id="yearsInvestmentError"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="annualReturn">Expected Annual Return (%)</label>
+                    <input type="number" id="annualReturn" placeholder="7" min="-50" max="100" step="0.1" required>
+                    <div class="error" id="annualReturnError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="inflationRate">Inflation Rate (%)</label>
+                    <input type="number" id="inflationRate" placeholder="2.5" min="0" max="20" step="0.1">
+                    <div class="error" id="inflationRateError"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="form-group">
+                    <label for="taxRate">Tax Rate (%)</label>
+                    <input type="number" id="taxRate" placeholder="15" min="0" max="50" step="0.1">
+                    <div class="error" id="taxRateError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="compoundFrequency">Compound Frequency</label>
+                    <select id="compoundFrequency" style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:16px;">
+                        <option value="12">Monthly</option>
+                        <option value="4">Quarterly</option>
+                        <option value="2">Semi-Annual</option>
+                        <option value="1" selected>Annual</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="calculate-btn" onclick="calculateReturn()">Calculate Return</button>
+                <button type="reset" class="reset-btn" onclick="resetForm()">Clear</button>
+            </div>
+        </form>
+
+        <div id="results" class="results hidden">
+            <h3>Investment Projection Results</h3>
+            <div class="result-item">
+                <span class="result-label">Final Value (Nominal):</span>
+                <span class="result-value" id="finalValueNominal">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Contributions:</span>
+                <span class="result-value" id="totalContributions">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Investment Gains:</span>
+                <span class="result-value" id="totalGains">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Taxes Paid:</span>
+                <span class="result-value" id="taxesPaid">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Final Value (After Tax):</span>
+                <span class="result-value" id="finalValueAfterTax">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Final Value (Inflation-Adjusted):</span>
+                <span class="result-value" id="finalValueAdjusted">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Real Return Rate:</span>
+                <span class="result-value" id="realReturnRate">0.00%</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateReturn() {
+            // Get input values
+            const initial = parseFloat(document.getElementById('initialInvestment').value);
+            const annual = parseFloat(document.getElementById('annualContribution').value) || 0;
+            const years = parseInt(document.getElementById('yearsInvestment').value);
+            const returnRate = parseFloat(document.getElementById('annualReturn').value) / 100;
+            const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100 || 0.025;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) / 100 || 0.15;
+            const frequency = parseInt(document.getElementById('compoundFrequency').value);
+
+            // Validation
+            if (!initial || initial < 0 || !years || years <= 0) {
+                alert('Please enter valid values for initial investment and time period.');
+                return;
+            }
+
+            // Calculate future value with compound interest and regular contributions
+            const monthlyRate = returnRate / frequency;
+            const periods = years * frequency;
+            const monthlyContribution = annual / frequency;
+
+            // Future Value of initial investment
+            let fv = initial * Math.pow(1 + monthlyRate, periods);
+
+            // Future Value of contributions (annuity)
+            if (annual > 0) {
+                fv += monthlyContribution * (Math.pow(1 + monthlyRate, periods) - 1) / monthlyRate;
+            }
+
+            // Calculate gains and taxes
+            const totalContributions = initial + (annual * years);
+            const totalGains = fv - totalContributions;
+            const taxesPaid = Math.max(0, totalGains * taxRate);
+            const afterTax = fv - taxesPaid;
+
+            // Inflation adjustment
+            const inflationFactor = Math.pow(1 + inflationRate, years);
+            const adjustedValue = afterTax / inflationFactor;
+
+            // Real return rate
+            const realReturnPerYear = (((afterTax / totalContributions) ** (1 / years)) - 1) - inflationRate;
+
+            // Display results
+            document.getElementById('finalValueNominal').textContent = '$' + fv.toFixed(2);
+            document.getElementById('totalContributions').textContent = '$' + totalContributions.toFixed(2);
+            document.getElementById('totalGains').textContent = '$' + totalGains.toFixed(2);
+            document.getElementById('taxesPaid').textContent = '$' + taxesPaid.toFixed(2);
+            document.getElementById('finalValueAfterTax').textContent = '$' + afterTax.toFixed(2);
+            document.getElementById('finalValueAdjusted').textContent = '$' + adjustedValue.toFixed(2);
+            document.getElementById('realReturnRate').textContent = (realReturnPerYear * 100).toFixed(2) + '%';
+
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('investmentForm').reset();
+            document.getElementById('results').classList.add('hidden');
+        }
+
+        // Allow Enter key to calculate
+        document.getElementById('investmentForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateReturn();
+            }
+        });
+    </script>
+</body>
+</html>
