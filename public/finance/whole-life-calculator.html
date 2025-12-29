@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whole Life Calculator - Flo Faction</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .content { padding: 40px; }
+        .input-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
+        input[type="number"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1em; }
+        input[type="number"]:focus { outline: none; border-color: #00A8D8; box-shadow: 0 0 0 3px rgba(0,168,216,0.1); }
+        .button-group { display: flex; gap: 15px; margin-top: 30px; }
+        button { flex: 1; padding: 14px 20px; border: none; border-radius: 6px; font-size: 1.1em; font-weight: 600; cursor: pointer; }
+        .calculate-btn { background: #00A8D8; color: white; }
+        .calculate-btn:hover { background: #0088aa; }
+        .reset-btn { background: #f0f0f0; color: #333; }
+        .results-section { display: none; margin-top: 40px; padding-top: 40px; border-top: 2px solid #ddd; }
+        .results-section.active { display: block; }
+        .result-item { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #00A8D8; }
+        .result-label { font-size: 0.9em; color: #666; margin-bottom: 5px; }
+        .result-value { font-size: 2em; color: #00A8D8; font-weight: 700; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Whole Life Calculator</h1>
+            <p>Build Permanent Insurance & Cash Value</p>
+        </div>
+        <div class="content">
+            <form id="wholeLifeForm" onsubmit="calculateWholeLife(event)">
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label for="age">Your Current Age</label>
+                        <input type="number" id="age" min="18" max="100" required placeholder="Enter your age">
+                    </div>
+                    <div class="input-group">
+                        <label for="deathBenefit">Desired Death Benefit ($)</label>
+                        <input type="number" id="deathBenefit" min="50000" step="50000" required placeholder="e.g., 500000">
+                    </div>
+                    <div class="input-group">
+                        <label for="monthlyPremium">Monthly Premium ($)</label>
+                        <input type="number" id="monthlyPremium" min="50" step="10" required placeholder="e.g., 500">
+                    </div>
+                    <div class="input-group">
+                        <label for="years">Planning Horizon (Years)</label>
+                        <input type="number" id="years" min="1" max="50" value="30" required>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="calculate-btn">Calculate</button>
+                    <button type="reset" class="reset-btn">Reset</button>
+                </div>
+            </form>
+            <div id="results" class="results-section">
+                <h2>Whole Life Analysis</h2>
+                <div class="grid-2">
+                    <div class="result-item">
+                        <div class="result-label">Total Premiums Paid</div>
+                        <div class="result-value" id="totalPremiums">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Projected Cash Value</div>
+                        <div class="result-value" id="cashValue">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Death Benefit</div>
+                        <div class="result-value" id="deathBenefitResult">$0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Cash Value ROI</div>
+                        <div class="result-value" id="roi">$0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function calculateWholeLife(event) {
+            event.preventDefault();
+            const age = parseInt(document.getElementById('age').value);
+            const benefit = parseFloat(document.getElementById('deathBenefit').value);
+            const premium = parseFloat(document.getElementById('monthlyPremium').value);
+            const years = parseInt(document.getElementById('years').value);
+            const totalPaid = premium * 12 * years;
+            const cashValue = totalPaid * 0.7;
+            const roi = cashValue - totalPaid;
+            document.getElementById('totalPremiums').textContent = '$' + totalPaid.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('cashValue').textContent = '$' + cashValue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('deathBenefitResult').textContent = '$' + benefit.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('roi').textContent = '$' + roi.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('results').classList.add('active');
+        }
+    </script>
+</body>
+</html>
