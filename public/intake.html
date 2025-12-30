@@ -404,6 +404,8 @@
         contactPreference: formData.get('contactPreference') || 'email',
         message: formData.get('message') || '',
         submittedFrom: window.location.href,
+                    product_type: formData.get('serviceType'),
+            source_page: window.location.pathname,
         timestamp: serverTimestamp()
       };
 
