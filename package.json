@@ -1,7 +1,7 @@
 {
   "name": "flofaction-website",
   "version": "1.0.0",
-  "description": "FloFaction Marketing Website",
+  "description": "Flo Faction Marketing Website - Insurance, Wealth Management, and Digital Services",
   "main": "public/index.html",
   "scripts": {
     "build": "echo 'Static site - no build needed'"
