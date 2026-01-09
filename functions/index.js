@@ -4,6 +4,9 @@ const cors = require('cors')({origin: true});
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 
+// Load environment variables from .env file (for local development)
+require('dotenv').config();
+
 admin.initializeApp();
 
 // HTML sanitization helper to prevent XSS in emails
@@ -259,6 +262,150 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
       return res.status(500).json({
         success: false,
         error: error.message || 'Server error'
+      });
+    }
+  });
+});
+
+// Process Order - Handle completed PayPal payments
+exports.processOrder = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      // Set CORS headers
+      res.set('Access-Control-Allow-Origin', '*');
+      res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      res.set('Access-Control-Allow-Headers', 'Content-Type');
+
+      if (req.method === 'OPTIONS') {
+        res.status(200).send();
+        return;
+      }
+
+      if (req.method !== 'POST') {
+        return res.status(405).json({ success: false, error: 'Method not allowed' });
+      }
+
+      const {
+        orderId,
+        items,
+        total,
+        customerEmail,
+        customerName,
+        customerDetails
+      } = req.body;
+
+      // Validate required fields
+      if (!orderId || !customerEmail) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: orderId, customerEmail'
+        });
+      }
+
+      // Store order in Firestore
+      const orderRef = await admin.firestore()
+        .collection('orders')
+        .add({
+          orderId,
+          items: items || [],
+          total: total || 0,
+          customerEmail,
+          customerName,
+          customerDetails: customerDetails || {},
+          status: 'completed',
+          paymentMethod: 'paypal',
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          deliveryStatus: 'pending'
+        });
+
+      // Prepare email content for customer
+      const customerSubject = `Order Confirmation #${orderId.substring(0, 8)} - Flo Faction`;
+      const itemsList = items ? items.map(item =>
+        `<li>${escapeHtml(item.name)} - Quantity: ${item.quantity} - $${item.price.toFixed(2)}</li>`
+      ).join('') : '';
+
+      const customerBody = `
+        <h2>Thank You for Your Order!</h2>
+        <p>Hello ${escapeHtml(customerName)},</p>
+        <p>Your order has been confirmed and your digital products are being prepared for delivery.</p>
+
+        <h3>Order Details</h3>
+        <p><strong>Order ID:</strong> ${orderId}</p>
+        <p><strong>Order Date:</strong> ${new Date().toLocaleString()}</p>
+
+        <h3>Items Ordered</h3>
+        <ul>
+          ${itemsList}
+        </ul>
+
+        <p><strong>Total:</strong> $${parseFloat(total).toFixed(2)}</p>
+
+        <p style="margin-top: 30px;">Your digital products will be sent to this email address within 24 hours.</p>
+        <p>If you have any questions, please contact us at support@flofaction.com</p>
+
+        <p>Best regards,<br/>Flo Faction Team</p>
+
+        <hr>
+        <p style="font-size: 0.9em; color: #666;">
+          <strong>30-Day Money-Back Guarantee:</strong> If you're not satisfied with your purchase,
+          contact us within 30 days for a full refund.
+        </p>
+      `;
+
+      // Prepare email for admin
+      const adminSubject = `[NEW ORDER] ${customerName} - $${parseFloat(total).toFixed(2)} - Order #${orderId.substring(0, 8)}`;
+      const adminBody = `
+        <h2>New Order Received</h2>
+        <p><strong>Order ID:</strong> ${orderId}</p>
+        <p><strong>Customer:</strong> ${escapeHtml(customerName)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
+        <p><strong>Total:</strong> $${parseFloat(total).toFixed(2)}</p>
+
+        <h3>Items</h3>
+        <ul>
+          ${itemsList}
+        </ul>
+
+        <p><strong>Order Time:</strong> ${new Date().toISOString()}</p>
+        <p><strong>Firestore ID:</strong> ${orderRef.id}</p>
+
+        <p style="margin-top: 20px;">⚠️ Action Required: Deliver digital products to customer email</p>
+      `;
+
+      // Send emails
+      const emailPromises = [];
+
+      // Customer confirmation email
+      const customerMailOptions = {
+        from: process.env.SMTP_USER_BUSINESS || 'flofaction.business@gmail.com',
+        to: customerEmail,
+        subject: customerSubject,
+        html: customerBody
+      };
+
+      // Admin notification email
+      const adminMailOptions = {
+        from: process.env.SMTP_USER_BUSINESS || 'flofaction.business@gmail.com',
+        to: process.env.SMTP_USER_BUSINESS || 'flofaction.business@gmail.com',
+        subject: adminSubject,
+        html: adminBody
+      };
+
+      emailPromises.push(businessTransporter.sendMail(customerMailOptions));
+      emailPromises.push(businessTransporter.sendMail(adminMailOptions));
+
+      await Promise.all(emailPromises);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Order processed successfully',
+        orderId: orderRef.id
+      });
+    } catch (error) {
+      console.error('Error processing order:', error);
+      return res.status(500).json({
+        success: false,
+        error: error.message || 'Error processing order'
       });
     }
   });
