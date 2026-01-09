@@ -69,8 +69,8 @@ Add before closing `</body>` tag in:
 Set these in Firebase environment:
 
 ```
-GEMINI_API_KEY=AlzaSyAIfXpcGndNb2dNHs07_QcAi6Od37_DACw
-ELEVENLABS_API_KEY=[Your ElevenLabs Key]
+GEMINI_API_KEY=[Your Gemini API Key - DO NOT COMMIT]
+ELEVENLABS_API_KEY=[Your ElevenLabs Key - DO NOT COMMIT]
 ELEVENLABS_PHONE=+1 772 777 8345
 FIREBASE_PROJECT_ID=flofaction-website-44132480
 ```

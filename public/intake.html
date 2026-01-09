@@ -360,22 +360,21 @@
     const errorText = document.getElementById('errorText');
 
      const serviceType = document.getElementById('serviceType');
- 363
-   = {
-   generational-wealth: 'Build generational wealth through strategic generational-wealth strategies. Understand how to structure assets for maximum family benefit across multiple generations.',
-   banking: 'Explore banking solutions designed for families. Learn how to manage household finances effectively solutions that allow you to become your own banker. Learn how to leverage banking strategies for financial flexibility and growth.',
+   const descriptions = {
+   'generational-wealth': 'Build generational wealth through strategic generational-wealth strategies. Understand how to structure assets for maximum family benefit across multiple generations.',
+   'banking': 'Explore banking solutions designed for families. Learn how to manage household finances effectively solutions that allow you to become your own banker. Learn how to leverage banking strategies for financial flexibility and growth.',
    'life-insurance': 'Protect your family with comprehensive life insurance coverage. Our experts help you find the right protection for your needs and budget.',
    'wealth-management': 'Comprehensive wealth management services to grow and protect your assets. Let us help you achieve your financial goals with a tailored strategy.',
    'legacy-planning': 'Plan your legacy and ensure your values and assets transfer smoothly to the next generation. Create a lasting impact.',
-   healthcare: 'Healthcare planning services to protect your health and finances. Navigate insurance options and healthcare savings strategies.',
-   travel: 'Professional travel planning services. Let us help you plan your perfect getaway with expert guidance.',
+   'healthcare': 'Healthcare planning services to protect your health and finances. Navigate insurance options and healthcare savings strategies.',
+   'travel': 'Professional travel planning services. Let us help you plan your perfect getaway with expert guidance.',
    'real-estate': 'Real estate investment and planning services. Build wealth through strategic property management and investment.',
-   tax: 'Tax planning and optimization strategies to minimize your tax burden and maximize your returns.',
-   retirement: 'Comprehensive retirement planning to ensure financial security in your golden years. Start planning today.',
-   music: 'Music production services for artists and creators. Bring your music vision to life with professional expertise.',
-   videography: 'Professional videography services for events, businesses, and creative projects. Capture your story beautifully.',
-   portfolio: 'Portfolio development services for creatives. Build a professional portfolio that showcases your best work.',
-   emergency: 'Emergency consultation services available when you need immediate guidance. Fast, expert advice.'
+   'tax': 'Tax planning and optimization strategies to minimize your tax burden and maximize your returns.',
+   'retirement': 'Comprehensive retirement planning to ensure financial security in your golden years. Start planning today.',
+   'music': 'Music production services for artists and creators. Bring your music vision to life with professional expertise.',
+   'videography': 'Professional videography services for events, businesses, and creative projects. Capture your story beautifully.',
+   'portfolio': 'Portfolio development services for creatives. Build a professional portfolio that showcases your best work.',
+   'emergency': 'Emergency consultation services available when you need immediate guidance. Fast, expert advice.'
  };
 
  serviceType.addEventListener('change', (e) => {
@@ -431,7 +430,9 @@
       console.error('Form submission error:', error);
       errorText.textContent = error.message || 'There was an error submitting your form. Please try again.';
       errorMessage.style.display = 'block';
-    })  </script>
+    });
+  });
+  </script>
 <script src="js/navigation.js"></script>
 </body>
 </html>

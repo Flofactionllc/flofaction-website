@@ -2,8 +2,22 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const cors = require('cors')({origin: true});
 const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 admin.initializeApp();
+
+// HTML sanitization helper to prevent XSS in emails
+function escapeHtml(text) {
+  if (!text) return text;
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return String(text).replace(/[&<>"']/g, m => map[m]);
+}
 
 // Email routing configuration
 const emailRouting = {
@@ -150,26 +164,26 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
           ipAddress: req.ip || 'unknown'
         });
       
-      // Prepare email content
+      // Prepare email content with sanitized inputs
       const subjectTag = routing.isUnclassified ? '[UNCLASSIFIED] ' : '';
-      const adminSubject = `${subjectTag}[NEW INTAKE] ${firstName} ${lastName} - ${routing.category}`;
+      const adminSubject = `${subjectTag}[NEW INTAKE] ${escapeHtml(firstName)} ${escapeHtml(lastName)} - ${routing.category}`;
       const adminBody = `
         <h2>New Intake Submission</h2>
-        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
-        <p><strong>Product Type:</strong> ${product_type || serviceType || 'Not specified'}</p>
+        <p><strong>Name:</strong> ${escapeHtml(firstName)} ${escapeHtml(lastName)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone) || 'N/A'}</p>
+        <p><strong>Product Type:</strong> ${escapeHtml(product_type || serviceType || 'Not specified')}</p>
         <p><strong>Category:</strong> ${routing.category}</p>
-        <p><strong>Source:</strong> ${source_page || 'Unknown'}</p>
-        <p><strong>Message:</strong> ${message || 'No message provided'}</p>
+        <p><strong>Source:</strong> ${escapeHtml(source_page) || 'Unknown'}</p>
+        <p><strong>Message:</strong> ${escapeHtml(message) || 'No message provided'}</p>
         <p><strong>Submission ID:</strong> ${docRef.id}</p>
         <p><strong>Submitted:</strong> ${new Date().toISOString()}</p>
       `;
-      
+
       const clientSubject = 'We Received Your Submission - Flo Faction';
       const clientBody = `
         <h2>Thank You for Your Submission</h2>
-        <p>Hello ${firstName},</p>
+        <p>Hello ${escapeHtml(firstName)},</p>
         <p>We have successfully received your intake form. Our team will review your information and contact you within 24 business hours.</p>
         <p>Your submission ID for reference: <strong>${docRef.id}</strong></p>
         <p>Best regards,<br/>Flo Faction Team</p>
@@ -215,13 +229,11 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
         };
         
         emailsToSend.push(
-          fetch(process.env.N8N_WEBHOOK_URL, {
-            method: 'POST',
+          axios.post(process.env.N8N_WEBHOOK_URL, webhookPayload, {
             headers: {
               'Content-Type': 'application/json',
               ...(process.env.N8N_WEBHOOK_TOKEN && { 'Authorization': `Bearer ${process.env.N8N_WEBHOOK_TOKEN}` })
-            },
-            body: JSON.stringify(webhookPayload)
+            }
           }).catch(err => {
             console.error('n8n webhook error:', err);
             // Don't fail the whole operation if webhook fails
