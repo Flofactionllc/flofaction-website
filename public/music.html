@@ -38,10 +38,36 @@
     </nav>    <div class="header">
         <h1>🎵 Music Production</h1>
         <p>Professional music production, audio engineering, composition, and sound design</p>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="/music-store.html" style="background: linear-gradient(135deg, #64c8ff, #00ff88); color: #000; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: transform 0.3s; display: inline-block;">
+                🛒 Browse Beat Store
+            </a>
+            <a href="/contact.html" style="background: rgba(100, 200, 255, 0.2); border: 2px solid rgba(100, 200, 255, 0.5); color: #fff; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 700; transition: transform 0.3s; display: inline-block;">
+                📞 Request Custom Production
+            </a>
+        </div>
     </div>
+
     <div class="container">
+        <div class="widget-section" style="margin-bottom: 3rem;">
+            <h2>🎧 Featured Producers</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                <div style="background: rgba(100, 200, 255, 0.1); border: 2px solid rgba(100, 200, 255, 0.3); border-radius: 12px; padding: 2rem; text-align: center;">
+                    <h3 style="font-size: 2rem; color: #64c8ff; margin-bottom: 1rem;">🎹 LUAP</h3>
+                    <p style="color: #ccc; margin-bottom: 1rem;">Specializing in Hip Hop, R&B, and Atmospheric beats</p>
+                    <a href="/music-store.html?producer=luap" style="color: #00ff88; text-decoration: none; font-weight: 600;">View Beats →</a>
+                </div>
+                <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 2rem; text-align: center;">
+                    <h3 style="font-size: 2rem; color: #00ff88; margin-bottom: 1rem;">🎛️ CRYPTK</h3>
+                    <p style="color: #ccc; margin-bottom: 1rem;">Expert in Trap, Drill, and Hard-hitting beats</p>
+                    <a href="/music-store.html?producer=cryptk" style="color: #64c8ff; text-decoration: none; font-weight: 600;">View Beats →</a>
+                </div>
+            </div>
+        </div>
+
         <div class="widget-section">
-            <h2>Music Production Specialist</h2>
+            <h2>🎤 Music Production Specialist</h2>
             <p>Expert guidance on music production, audio engineering, mixing, and creative sound design.</p>
             <div class="widget-container">
                 <elevenlabs-convai agent-id="agent_3701kcagrryxep98ckfd4ssn00sz"></elevenlabs-convai>
@@ -53,6 +79,7 @@
     </footer>
     <script src="https://elevenlabs.io/convai?agent-id=agent_3701kcagrryxep98ckfd4ssn00sz"></script>
     <script src="/public/js/router.js"></script>
+<script src="js/cart.js"></script>
 <script src="js/navigation.js"></script>
 </body>
 </html>

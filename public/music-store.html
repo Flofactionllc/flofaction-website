@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beat Store - Luap & Cryptk | Flo Faction Music</title>
+    <meta name="description" content="Premium beats and instrumentals from producers Luap and Cryptk. Buy beats with instant download, lease options, and exclusive rights available.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: rgba(15, 20, 25, 0.95);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #64c8ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #64c8ff;
+        }
+
+        .cart-icon {
+            position: relative;
+            color: #00ff88;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.1), rgba(0, 255, 136, 0.1));
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #64c8ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: #ccc;
+        }
+
+        .artist-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .artist-badge {
+            background: rgba(100, 200, 255, 0.1);
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar label {
+            color: #64c8ff;
+            font-weight: 600;
+        }
+
+        .filter-bar select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .beats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .beat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(100, 200, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .beat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.2);
+        }
+
+        .beat-artwork {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .beat-content {
+            padding: 1.5rem;
+        }
+
+        .beat-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #64c8ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .beat-producer {
+            color: #00ff88;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .beat-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .beat-tag {
+            background: rgba(100, 200, 255, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #64c8ff;
+        }
+
+        .audio-player {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #64c8ff, #00ff88);
+            border: none;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .waveform {
+            flex: 1;
+            height: 40px;
+            background: linear-gradient(90deg,
+                rgba(100, 200, 255, 0.3) 0%,
+                rgba(100, 200, 255, 0.6) 50%,
+                rgba(100, 200, 255, 0.3) 100%
+            );
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-option {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(100, 200, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .price-option:hover {
+            background: rgba(100, 200, 255, 0.2);
+            border-color: rgba(100, 200, 255, 0.5);
+        }
+
+        .price-option.exclusive {
+            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .price-label {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .price-option.exclusive .price-amount {
+            color: #ffd700;
+        }
+
+        .buy-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .buy-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .buy-btn.lease {
+            background: linear-gradient(135deg, #64c8ff, #00ff88);
+            color: #000;
+        }
+
+        .buy-btn.exclusive {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 200, 255, 0.3);
+        }
+
+        .featured-banner {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .cta-section {
+            background: rgba(100, 200, 255, 0.1);
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #64c8ff;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #64c8ff, #00ff88);
+            color: #000;
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            color: #fff;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        footer {
+            background: #0a0f15;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .beats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .artist-badges {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">🎵 Flo Faction Music</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/music.html">Music Services</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/checkout.html" class="cart-icon">
+                🛒 <span id="cart-badge" class="cart-badge">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>🎧 Premium Beat Store</h1>
+        <p>High-quality beats and instrumentals from top producers</p>
+        <div class="artist-badges">
+            <div class="artist-badge">🎹 LUAP</div>
+            <div class="artist-badge">🎛️ CRYPTK</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filter-bar">
+            <label>Filter by:</label>
+            <select id="genreFilter">
+                <option value="all">All Genres</option>
+                <option value="hiphop">Hip Hop</option>
+                <option value="trap">Trap</option>
+                <option value="drill">Drill</option>
+                <option value="rnb">R&B</option>
+                <option value="pop">Pop</option>
+                <option value="afrobeat">Afrobeat</option>
+            </select>
+
+            <select id="producerFilter">
+                <option value="all">All Producers</option>
+                <option value="luap">Luap</option>
+                <option value="cryptk">Cryptk</option>
+            </select>
+
+            <select id="bpmFilter">
+                <option value="all">All BPM</option>
+                <option value="slow">Slow (60-90)</option>
+                <option value="medium">Medium (90-130)</option>
+                <option value="fast">Fast (130-180)</option>
+            </select>
+        </div>
+
+        <div class="beats-grid" id="beatsGrid">
+            <!-- Beat cards will be dynamically generated here -->
+        </div>
+
+        <div class="cta-section">
+            <h2>Need Custom Production?</h2>
+            <p style="color: #ccc; margin-bottom: 1rem;">
+                Looking for exclusive beats tailored to your style? Our producers offer custom production services.
+            </p>
+            <div class="cta-buttons">
+                <a href="/contact.html" class="cta-btn primary">Request Custom Beat</a>
+                <a href="/music.html" class="cta-btn secondary">Learn About Services</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Flo Faction Music. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            All beats are copyright protected. Unauthorized use is prohibited.
+        </p>
+    </footer>
+
+    <script src="js/cart.js"></script>
+    <script src="js/navigation.js"></script>
+
+    <script>
+        // Beat catalog - REPLACE THIS WITH YOUR ACTUAL BEATS
+        const beats = [
+            {
+                id: 'luap-skyline-dreams',
+                title: 'Skyline Dreams',
+                producer: 'Luap',
+                genre: 'hiphop',
+                bpm: 95,
+                key: 'A Minor',
+                mood: 'Dark, Atmospheric',
+                audioUrl: '/audio/beats/luap-skyline-dreams.mp3', // Add your beat file here
+                artwork: '🌃',
+                prices: {
+                    mp3Lease: 29.99,
+                    wavLease: 49.99,
+                    trackout: 99.99,
+                    exclusive: 299.99
+                },
+                featured: true
+            },
+            {
+                id: 'cryptk-midnight-vibe',
+                title: 'Midnight Vibe',
+                producer: 'Cryptk',
+                genre: 'trap',
+                bpm: 140,
+                key: 'F# Minor',
+                mood: 'Energetic, Hard',
+                audioUrl: '/audio/beats/cryptk-midnight-vibe.mp3',
+                artwork: '🌙',
+                prices: {
+                    mp3Lease: 29.99,
+                    wavLease: 49.99,
+                    trackout: 99.99,
+                    exclusive: 299.99
+                },
+                featured: false
+            },
+            {
+                id: 'luap-neon-lights',
+                title: 'Neon Lights',
+                producer: 'Luap',
+                genre: 'rnb',
+                bpm: 85,
+                key: 'C Major',
+                mood: 'Smooth, Melodic',
+                audioUrl: '/audio/beats/luap-neon-lights.mp3',
+                artwork: '💡',
+                prices: {
+                    mp3Lease: 29.99,
+                    wavLease: 49.99,
+                    trackout: 99.99,
+                    exclusive: 299.99
+                },
+                featured: false
+            },
+            {
+                id: 'cryptk-drill-time',
+                title: 'Drill Time',
+                producer: 'Cryptk',
+                genre: 'drill',
+                bpm: 145,
+                key: 'G Minor',
+                mood: 'Aggressive, Raw',
+                audioUrl: '/audio/beats/cryptk-drill-time.mp3',
+                artwork: '⚡',
+                prices: {
+                    mp3Lease: 29.99,
+                    wavLease: 49.99,
+                    trackout: 99.99,
+                    exclusive: 299.99
+                },
+                featured: true
+            },
+            // ADD MORE BEATS HERE
+        ];
+
+        // Render beats
+        function renderBeats(filterGenre = 'all', filterProducer = 'all', filterBPM = 'all') {
+            const beatsGrid = document.getElementById('beatsGrid');
+            beatsGrid.innerHTML = '';
+
+            const filteredBeats = beats.filter(beat => {
+                const genreMatch = filterGenre === 'all' || beat.genre === filterGenre;
+                const producerMatch = filterProducer === 'all' || beat.producer.toLowerCase() === filterProducer;
+                const bpmMatch = filterBPM === 'all' || checkBPMRange(beat.bpm, filterBPM);
+                return genreMatch && producerMatch && bpmMatch;
+            });
+
+            filteredBeats.forEach(beat => {
+                const beatCard = document.createElement('div');
+                beatCard.className = 'beat-card';
+                beatCard.innerHTML = `
+                    ${beat.featured ? '<div class="featured-banner">⭐ FEATURED BEAT</div>' : ''}
+                    <div class="beat-artwork">${beat.artwork}</div>
+                    <div class="beat-content">
+                        <div class="beat-title">${beat.title}</div>
+                        <div class="beat-producer">Produced by ${beat.producer}</div>
+                        <div class="beat-info">
+                            <span class="beat-tag">${beat.genre.toUpperCase()}</span>
+                            <span class="beat-tag">${beat.bpm} BPM</span>
+                            <span class="beat-tag">${beat.key}</span>
+                        </div>
+                        <div class="audio-player">
+                            <div class="audio-controls">
+                                <button class="play-btn" onclick="playBeat('${beat.id}')">▶</button>
+                                <div class="waveform"></div>
+                            </div>
+                        </div>
+                        <div class="pricing-section">
+                            <div class="price-option" onclick="selectPrice('${beat.id}', 'mp3Lease', ${beat.prices.mp3Lease})">
+                                <div class="price-label">MP3 Lease</div>
+                                <div class="price-amount">$${beat.prices.mp3Lease}</div>
+                            </div>
+                            <div class="price-option" onclick="selectPrice('${beat.id}', 'wavLease', ${beat.prices.wavLease})">
+                                <div class="price-label">WAV Lease</div>
+                                <div class="price-amount">$${beat.prices.wavLease}</div>
+                            </div>
+                            <div class="price-option" onclick="selectPrice('${beat.id}', 'trackout', ${beat.prices.trackout})">
+                                <div class="price-label">Trackout</div>
+                                <div class="price-amount">$${beat.prices.trackout}</div>
+                            </div>
+                            <div class="price-option exclusive" onclick="selectPrice('${beat.id}', 'exclusive', ${beat.prices.exclusive})">
+                                <div class="price-label">Exclusive</div>
+                                <div class="price-amount">$${beat.prices.exclusive}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                beatsGrid.appendChild(beatCard);
+            });
+
+            if (filteredBeats.length === 0) {
+                beatsGrid.innerHTML = '<p style="text-align: center; color: #ccc; padding: 3rem;">No beats found matching your filters.</p>';
+            }
+        }
+
+        function checkBPMRange(bpm, range) {
+            switch(range) {
+                case 'slow': return bpm >= 60 && bpm < 90;
+                case 'medium': return bpm >= 90 && bpm < 130;
+                case 'fast': return bpm >= 130 && bpm <= 180;
+                default: return true;
+            }
+        }
+
+        function selectPrice(beatId, licenseType, price) {
+            const beat = beats.find(b => b.id === beatId);
+            if (!beat) return;
+
+            const licenseNames = {
+                mp3Lease: 'MP3 Lease',
+                wavLease: 'WAV Lease',
+                trackout: 'Trackout Stems',
+                exclusive: 'Exclusive Rights'
+            };
+
+            const productName = `${beat.title} - ${licenseNames[licenseType]} (${beat.producer})`;
+            addToCart(beatId + '-' + licenseType, productName, price);
+        }
+
+        function playBeat(beatId) {
+            // Implement audio playback here
+            alert('Audio preview coming soon! Beat ID: ' + beatId);
+            // TODO: Implement actual audio player with the audioUrl
+        }
+
+        // Filter handlers
+        document.getElementById('genreFilter').addEventListener('change', applyFilters);
+        document.getElementById('producerFilter').addEventListener('change', applyFilters);
+        document.getElementById('bpmFilter').addEventListener('change', applyFilters);
+
+        function applyFilters() {
+            const genre = document.getElementById('genreFilter').value;
+            const producer = document.getElementById('producerFilter').value;
+            const bpm = document.getElementById('bpmFilter').value;
+            renderBeats(genre, producer, bpm);
+        }
+
+        // Initial render
+        renderBeats();
+    </script>
+</body>
+</html>
