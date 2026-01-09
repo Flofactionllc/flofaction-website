@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.flofaction.com/sitemap.xml
+
+# Disallow admin/private areas (if any)
+# Disallow: /admin/
+# Disallow: /private/
