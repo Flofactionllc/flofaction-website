@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Roadmap | Flo Faction</title>
+    <meta name="description" content="Flo Faction's product roadmap - upcoming SaaS products and AI-powered solutions in development.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Roadmap Page Specific Styles */
+        .roadmap-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #667eea 100%);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roadmap-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        /* Timeline Styles */
+        .roadmap-timeline {
+            padding: 5rem 2rem;
+            background: var(--light-bg);
+        }
+
+        .timeline {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            position: relative;
+            margin-bottom: 4rem;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            border-color: var(--secondary-color);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 90%;
+            margin-right: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: 0;
+            margin-left: 2rem;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid white;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            right: auto;
+            left: -10px;
+            border-left: none;
+            border-right: 10px solid white;
+        }
+
+        .product-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .status-development {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-beta {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-coming {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .timeline-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .timeline-content h3 i {
+            font-size: 1.5rem;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-tag {
+            background: var(--light-bg);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Current Products Section */
+        .current-products {
+            padding: 5rem 2rem;
+            background: var(--dark-bg);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .product-card h3 {
+            color: white;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .product-card h3 i {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+        }
+
+        .product-card p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features {
+            list-style: none;
+        }
+
+        .product-features li {
+            color: rgba(255,255,255,0.8);
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-features li i {
+            color: var(--success-color);
+            font-size: 0.9rem;
+        }
+
+        /* Tech Stack Section */
+        .tech-stack {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tech-item {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tech-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .tech-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .tech-item p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Action Items Section */
+        .action-items {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .action-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .action-number {
+            background: white;
+            color: var(--primary-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 50px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+
+            .timeline-item::before,
+            .timeline-item:nth-child(even)::before {
+                left: 20px;
+                transform: translateX(-50%);
+            }
+
+            .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .timeline-content::before,
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -10px;
+                right: auto;
+                border-left: none;
+                border-right: 10px solid white;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <span class="logo"><i class="fas fa-bolt"></i> Flo Faction</span>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="insurance.html">Insurance</a>
+            <a href="finance/">Calculators</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="roadmap.html" class="active">Roadmap</a>
+            <a href="intake.html">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="roadmap-hero hero">
+        <div class="container" style="position: relative; z-index: 1;">
+            <h1>Product Roadmap</h1>
+            <p>Building the future of AI-powered insurance and financial services</p>
+        </div>
+    </section>
+
+    <!-- Future SaaS Products Timeline -->
+    <section class="roadmap-timeline">
+        <div class="container">
+            <h2 class="text-center mb-4">Future SaaS Products</h2>
+            <p class="text-center text-muted mb-4">Our vision for the next generation of business automation tools</p>
+
+            <div class="timeline">
+                <!-- Agent Hub -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="product-status status-development">In Development</span>
+                        <h3><i class="fas fa-users-cog"></i> FLO FACTION AGENT HUB</h3>
+                        <p>Unified CRM platform built on Base44 for insurance agents. Streamline your entire workflow with intelligent automation.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">HubSpot Integration</span>
+                            <span class="feature-tag">Slack</span>
+                            <span class="feature-tag">WhatsApp</span>
+                            <span class="feature-tag">Lead Tracking</span>
+                            <span class="feature-tag">Policy Management</span>
+                            <span class="feature-tag">Real-time Analytics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Platform -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="product-status status-development">In Development</span>
+                        <h3><i class="fas fa-brain"></i> FLO FACTION AI ASSISTANT PLATFORM</h3>
+                        <p>Deploy custom AI voice agents with our revolutionary hive mind framework. Agents share knowledge and learn together.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Multi-Persona</span>
+                            <span class="feature-tag">Hive Mind</span>
+                            <span class="feature-tag">Voice AI</span>
+                            <span class="feature-tag">Google Voice</span>
+                            <span class="feature-tag">NLU</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intake Engine -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="product-status status-beta">Beta</span>
+                        <h3><i class="fas fa-clipboard-list"></i> FLO FACTION INTAKE ENGINE</h3>
+                        <p>Multi-step form builder with AI-powered validation. Enterprise-grade security with SSN encryption.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Form Builder</span>
+                            <span class="feature-tag">AI Validation</span>
+                            <span class="feature-tag">SSN Encryption</span>
+                            <span class="feature-tag">Document Upload</span>
+                            <span class="feature-tag">Custom Workflows</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Omnichannel Suite -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="product-status status-development">In Development</span>
+                        <h3><i class="fas fa-comments"></i> FLO FACTION OMNICHANNEL SUITE</h3>
+                        <p>Unified communication hub across all channels. AI-powered responses with unified inbox.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Email</span>
+                            <span class="feature-tag">SMS</span>
+                            <span class="feature-tag">WhatsApp</span>
+                            <span class="feature-tag">Slack</span>
+                            <span class="feature-tag">Unified Inbox</span>
+                            <span class="feature-tag">AI Responses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Platform -->
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <span class="product-status status-coming">Coming Soon</span>
+                        <h3><i class="fas fa-chart-bar"></i> FLO FACTION ANALYTICS PLATFORM</h3>
+                        <p>Real-time business intelligence with predictive analytics and competitor tracking.</p>
+                        <div class="feature-tags">
+                            <span class="feature-tag">Real-time Metrics</span>
+                            <span class="feature-tag">Lead Conversion</span>
+                            <span class="feature-tag">Revenue Forecasting</span>
+                            <span class="feature-tag">Dashboards</span>
+                            <span class="feature-tag">Competitor Analysis</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Products -->
+    <section class="current-products">
+        <div class="container">
+            <h2 class="text-center" style="color: white; margin-bottom: 3rem;">Currently Available</h2>
+            <div class="products-grid">
+                <!-- Financial Calculators -->
+                <div class="product-card">
+                    <h3><i class="fas fa-calculator"></i> Financial Calculator Suite</h3>
+                    <p>12 professional-grade calculators for comprehensive financial planning.</p>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check"></i> Retirement Calculator</li>
+                        <li><i class="fas fa-check"></i> Life Insurance Needs</li>
+                        <li><i class="fas fa-check"></i> Mortgage Calculator</li>
+                        <li><i class="fas fa-check"></i> Investment Return</li>
+                        <li><i class="fas fa-check"></i> Tax Planning</li>
+                        <li><i class="fas fa-check"></i> And 7 more...</li>
+                    </ul>
+                    <a href="finance/" class="button mt-2" style="width: 100%;">Access Calculators</a>
+                </div>
+
+                <!-- AI Voice Agents -->
+                <div class="product-card">
+                    <h3><i class="fas fa-microphone"></i> AI Voice Agents</h3>
+                    <p>Intelligent voice assistants powered by ElevenLabs for 24/7 customer support.</p>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check"></i> Home Guide Agent</li>
+                        <li><i class="fas fa-check"></i> Services Consultant</li>
+                        <li><i class="fas fa-check"></i> Insurance Specialist</li>
+                        <li><i class="fas fa-check"></i> Sales & Support</li>
+                        <li><i class="fas fa-check"></i> 80+ Agent Framework</li>
+                    </ul>
+                    <a href="index.html" class="button mt-2" style="width: 100%;">Meet Our Agents</a>
+                </div>
+
+                <!-- Lead Management -->
+                <div class="product-card">
+                    <h3><i class="fas fa-user-check"></i> Lead Management System</h3>
+                    <p>Complete lead tracking, scoring, and automation system.</p>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check"></i> AI-Based Lead Scoring</li>
+                        <li><i class="fas fa-check"></i> Automated Follow-ups</li>
+                        <li><i class="fas fa-check"></i> Email/SMS Drip Campaigns</li>
+                        <li><i class="fas fa-check"></i> Agent Assignment</li>
+                        <li><i class="fas fa-check"></i> Interaction Logging</li>
+                    </ul>
+                    <a href="intake.html" class="button mt-2" style="width: 100%;">Submit Lead</a>
+                </div>
+
+                <!-- Client Intake -->
+                <div class="product-card">
+                    <h3><i class="fas fa-clipboard"></i> Client Intake Platform</h3>
+                    <p>Smart intake forms with intelligent routing and multi-channel notifications.</p>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check"></i> Smart Email Routing</li>
+                        <li><i class="fas fa-check"></i> Multi-field Validation</li>
+                        <li><i class="fas fa-check"></i> Document Upload</li>
+                        <li><i class="fas fa-check"></i> Calendar Integration</li>
+                        <li><i class="fas fa-check"></i> Webhook Automation</li>
+                    </ul>
+                    <a href="intake.html" class="button mt-2" style="width: 100%;">Start Intake</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="tech-stack">
+        <div class="container">
+            <h2 class="text-center mb-4">Our Tech Stack</h2>
+            <p class="text-center text-muted mb-4">Built on industry-leading technologies for maximum reliability</p>
+
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-js"></i>
+                    <h4>JavaScript</h4>
+                    <p>Frontend & Backend</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-fire"></i>
+                    <h4>Firebase</h4>
+                    <p>Cloud Functions & Firestore</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-cloud"></i>
+                    <h4>Vercel</h4>
+                    <p>Hosting & CI/CD</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-github"></i>
+                    <h4>GitHub</h4>
+                    <p>Version Control</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-brain"></i>
+                    <h4>OpenAI</h4>
+                    <p>AI Models</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-microphone-alt"></i>
+                    <h4>ElevenLabs</h4>
+                    <p>Voice AI</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-envelope"></i>
+                    <h4>Resend</h4>
+                    <p>Transactional Email</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-credit-card"></i>
+                    <h4>Stripe</h4>
+                    <p>Payments</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-gem"></i>
+                    <h4>Gemini</h4>
+                    <p>Google AI</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Analytics</h4>
+                    <p>Google Analytics 4</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-robot"></i>
+                    <h4>Claude</h4>
+                    <p>Anthropic AI</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <h4>n8n</h4>
+                    <p>Workflow Automation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Items -->
+    <section class="action-items">
+        <div class="container">
+            <h2 class="text-center" style="color: white; margin-bottom: 3rem;">Current Development Priorities</h2>
+            <div class="action-grid">
+                <div class="action-card">
+                    <span class="action-number">1</span>
+                    <span>Install & configure all recommended MCP servers</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">2</span>
+                    <span>Build WhatsApp Business integration</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">3</span>
+                    <span>Complete Base44 CRM development</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">4</span>
+                    <span>Deploy voice AI agents with hive mind</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">5</span>
+                    <span>Create consumer-facing tier packages</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">6</span>
+                    <span>Develop API documentation</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">7</span>
+                    <span>Build competitor tracking dashboard</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">8</span>
+                    <span>Complete website homepage overhaul</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">9</span>
+                    <span>Integrate intake form with all systems</span>
+                </div>
+                <div class="action-card">
+                    <span class="action-number">10</span>
+                    <span>Set up automated drip campaigns</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding: 5rem 2rem; text-align: center; background: white;">
+        <div class="container">
+            <h2>Want Early Access?</h2>
+            <p class="text-muted mb-4">Join our beta program and be the first to try our new products.</p>
+            <a href="intake.html" class="button">Request Early Access</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Flo Faction LLC. All rights reserved.</p>
+        <div>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="js/business-config.js"></script>
+    <script src="js/navigation.js"></script>
+</body>
+</html>
