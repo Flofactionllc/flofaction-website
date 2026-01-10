@@ -1,8 +1,9 @@
 /**
  * FLO FACTION AUTONOMOUS AI CHAT WIDGET
  * Self-operating customer engagement and booking agent
+ * WITH VOICE CAPABILITIES (ElevenLabs + Web Speech API)
  *
- * @version 2.0.0
+ * @version 3.0.0
  * @author Flo Faction LLC
  */
 
@@ -30,8 +31,19 @@
         primaryColor: '#667eea',
         secondaryColor: '#764ba2',
 
-        // ElevenLabs Voice Agent ID (if available)
-        voiceAgentId: 'agent_2401kcafh68jer4s67d2d3y37mcv'
+        // ElevenLabs Voice Configuration
+        voiceAgentId: 'agent_2401kcafh68jer4s67d2d3y37mcv',
+        elevenLabsApiKey: 'sk_b02c271501244cd4c93e9bdeabdd21fa7ba15184697633b2',
+        voiceId: 'pNInz6obpgDQGcFmaJgB', // Adam - professional male voice
+        voiceEnabled: true,
+        autoSpeak: false, // Auto-speak bot responses
+
+        // Voice settings
+        voiceSettings: {
+            stability: 0.5,
+            similarityBoost: 0.75,
+            modelId: 'eleven_monolingual_v1'
+        }
     };
 
     // ============================================
@@ -382,6 +394,280 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
     };
 
     // ============================================
+    // VOICE ENGINE (ElevenLabs + Web Speech API)
+    // ============================================
+    class VoiceEngine {
+        constructor() {
+            this.isListening = false;
+            this.isSpeaking = false;
+            this.recognition = null;
+            this.audioContext = null;
+            this.voiceEnabled = CONFIG.voiceEnabled;
+            this.autoSpeak = CONFIG.autoSpeak;
+
+            this.initializeSpeechRecognition();
+            this.initializeAudioContext();
+        }
+
+        // Initialize Web Speech API for voice input
+        initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                console.warn('Speech Recognition not supported in this browser');
+                return;
+            }
+
+            this.recognition = new SpeechRecognition();
+            this.recognition.continuous = false;
+            this.recognition.interimResults = true;
+            this.recognition.lang = 'en-US';
+
+            this.recognition.onstart = () => {
+                this.isListening = true;
+                this.onListeningStart?.();
+            };
+
+            this.recognition.onend = () => {
+                this.isListening = false;
+                this.onListeningEnd?.();
+            };
+
+            this.recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    this.onFinalTranscript?.(finalTranscript);
+                } else if (interimTranscript) {
+                    this.onInterimTranscript?.(interimTranscript);
+                }
+            };
+
+            this.recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                this.isListening = false;
+                this.onListeningEnd?.();
+                this.onError?.(event.error);
+            };
+        }
+
+        // Initialize Audio Context for playback
+        initializeAudioContext() {
+            try {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (error) {
+                console.warn('AudioContext not supported:', error);
+            }
+        }
+
+        // Start voice input
+        startListening() {
+            if (!this.recognition) {
+                this.onError?.('Speech recognition not available');
+                return false;
+            }
+
+            if (this.isListening) {
+                return false;
+            }
+
+            try {
+                // Resume audio context if suspended (browser autoplay policy)
+                if (this.audioContext?.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                this.recognition.start();
+                return true;
+            } catch (error) {
+                console.error('Failed to start listening:', error);
+                return false;
+            }
+        }
+
+        // Stop voice input
+        stopListening() {
+            if (this.recognition && this.isListening) {
+                this.recognition.stop();
+            }
+        }
+
+        // Toggle listening
+        toggleListening() {
+            if (this.isListening) {
+                this.stopListening();
+            } else {
+                this.startListening();
+            }
+            return this.isListening;
+        }
+
+        // Speak text using ElevenLabs TTS
+        async speak(text) {
+            if (!this.voiceEnabled || this.isSpeaking) {
+                return false;
+            }
+
+            // Clean text for TTS (remove markdown, emojis, links)
+            const cleanText = this.cleanTextForSpeech(text);
+            if (!cleanText) return false;
+
+            this.isSpeaking = true;
+            this.onSpeakingStart?.();
+
+            try {
+                // Try ElevenLabs first
+                const audioUrl = await this.getElevenLabsAudio(cleanText);
+
+                if (audioUrl) {
+                    await this.playAudio(audioUrl);
+                } else {
+                    // Fallback to browser speech synthesis
+                    await this.browserSpeak(cleanText);
+                }
+            } catch (error) {
+                console.error('Speech error:', error);
+                // Fallback to browser speech
+                await this.browserSpeak(cleanText);
+            } finally {
+                this.isSpeaking = false;
+                this.onSpeakingEnd?.();
+            }
+
+            return true;
+        }
+
+        // Clean text for speech (remove markdown, links, emojis)
+        cleanTextForSpeech(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+                .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove link markdown, keep text
+                .replace(/[🚗🏠❤️🏥👴🏛️💧🏦📅📋📞💰❓😊👋✅1️⃣2️⃣3️⃣4️⃣5️⃣🎵]/g, '') // Remove emojis
+                .replace(/\n+/g, '. ') // Replace newlines with periods
+                .replace(/•/g, ', ') // Replace bullets
+                .replace(/\s+/g, ' ') // Normalize spaces
+                .trim()
+                .substring(0, 1000); // Limit length for TTS
+        }
+
+        // Get audio from ElevenLabs API
+        async getElevenLabsAudio(text) {
+            if (!CONFIG.elevenLabsApiKey) {
+                return null;
+            }
+
+            try {
+                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${CONFIG.voiceId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'audio/mpeg',
+                        'Content-Type': 'application/json',
+                        'xi-api-key': CONFIG.elevenLabsApiKey
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model_id: CONFIG.voiceSettings.modelId,
+                        voice_settings: {
+                            stability: CONFIG.voiceSettings.stability,
+                            similarity_boost: CONFIG.voiceSettings.similarityBoost
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    console.warn('ElevenLabs API error:', response.status);
+                    return null;
+                }
+
+                const blob = await response.blob();
+                return URL.createObjectURL(blob);
+            } catch (error) {
+                console.error('ElevenLabs TTS error:', error);
+                return null;
+            }
+        }
+
+        // Play audio from URL
+        playAudio(url) {
+            return new Promise((resolve, reject) => {
+                const audio = new Audio(url);
+
+                audio.onended = () => {
+                    URL.revokeObjectURL(url);
+                    resolve();
+                };
+
+                audio.onerror = (error) => {
+                    URL.revokeObjectURL(url);
+                    reject(error);
+                };
+
+                audio.play().catch(reject);
+            });
+        }
+
+        // Fallback browser speech synthesis
+        browserSpeak(text) {
+            return new Promise((resolve) => {
+                if (!('speechSynthesis' in window)) {
+                    resolve();
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                // Try to get a good voice
+                const voices = speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v =>
+                    v.name.includes('Google') ||
+                    v.name.includes('Alex') ||
+                    v.name.includes('Samantha')
+                );
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+
+                utterance.onend = resolve;
+                utterance.onerror = resolve;
+
+                speechSynthesis.speak(utterance);
+            });
+        }
+
+        // Stop speaking
+        stopSpeaking() {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+            this.isSpeaking = false;
+            this.onSpeakingEnd?.();
+        }
+
+        // Check capabilities
+        getCapabilities() {
+            return {
+                speechRecognition: !!this.recognition,
+                speechSynthesis: 'speechSynthesis' in window,
+                elevenLabs: !!CONFIG.elevenLabsApiKey,
+                audioContext: !!this.audioContext
+            };
+        }
+    }
+
+    // ============================================
     // HELPER FUNCTIONS
     // ============================================
     function detectProduct(input) {
@@ -423,6 +709,11 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
             this.messages = [];
             this.isTyping = false;
             this.lastActivity = Date.now();
+            this.autoSpeakEnabled = CONFIG.autoSpeak;
+
+            // Initialize voice engine
+            this.voice = new VoiceEngine();
+            this.setupVoiceCallbacks();
 
             this.injectStyles();
             this.createWidget();
@@ -434,6 +725,66 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
 
             // Idle prompt
             setInterval(() => this.checkIdlePrompt(), 10000);
+
+            // Expose for external access
+            window.FloFactionVoice = this;
+        }
+
+        setupVoiceCallbacks() {
+            // Voice input callbacks
+            this.voice.onListeningStart = () => {
+                this.elements?.micBtn?.classList.add('listening');
+                this.updateVoiceStatus('Listening...');
+            };
+
+            this.voice.onListeningEnd = () => {
+                this.elements?.micBtn?.classList.remove('listening');
+                this.updateVoiceStatus('');
+            };
+
+            this.voice.onFinalTranscript = (transcript) => {
+                if (this.elements?.input) {
+                    this.elements.input.value = transcript;
+                    this.sendMessage();
+                }
+            };
+
+            this.voice.onInterimTranscript = (transcript) => {
+                if (this.elements?.input) {
+                    this.elements.input.value = transcript;
+                }
+            };
+
+            // Voice output callbacks
+            this.voice.onSpeakingStart = () => {
+                this.elements?.speakerBtn?.classList.add('speaking');
+            };
+
+            this.voice.onSpeakingEnd = () => {
+                this.elements?.speakerBtn?.classList.remove('speaking');
+            };
+
+            this.voice.onError = (error) => {
+                console.error('Voice error:', error);
+                this.updateVoiceStatus('Error: ' + error);
+                setTimeout(() => this.updateVoiceStatus(''), 3000);
+            };
+        }
+
+        updateVoiceStatus(text) {
+            if (this.elements?.voiceStatus) {
+                this.elements.voiceStatus.textContent = text;
+                this.elements.voiceStatus.classList.toggle('visible', !!text);
+            }
+        }
+
+        // Start ElevenLabs Conversational AI call
+        async startElevenLabsCall() {
+            // Open a new window/tab with the ElevenLabs widget
+            if (CONFIG.voiceAgentId) {
+                const embedUrl = `https://elevenlabs.io/convai/${CONFIG.voiceAgentId}`;
+                window.open(embedUrl, 'FloFactionAI', 'width=400,height=600');
+            }
         }
 
         injectStyles() {
@@ -675,6 +1026,129 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
                         border-radius: 0;
                     }
                 }
+
+                /* Voice Button Styles */
+                .ff-voice-btn {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    border: 2px solid #e0e0e0;
+                    background: white;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                    flex-shrink: 0;
+                }
+                .ff-voice-btn:hover {
+                    border-color: ${CONFIG.primaryColor};
+                    background: #f0f4ff;
+                }
+                .ff-voice-btn.listening {
+                    border-color: #ff4757;
+                    background: #fff5f5;
+                    animation: voicePulse 1.5s infinite;
+                }
+                .ff-voice-btn.speaking {
+                    border-color: #2ed573;
+                    background: #f0fff4;
+                }
+                .ff-voice-btn svg {
+                    width: 20px;
+                    height: 20px;
+                    fill: #666;
+                }
+                .ff-voice-btn.listening svg {
+                    fill: #ff4757;
+                }
+                .ff-voice-btn.speaking svg {
+                    fill: #2ed573;
+                }
+                @keyframes voicePulse {
+                    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
+                    50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
+                }
+
+                /* Voice Status Indicator */
+                .ff-voice-status {
+                    position: absolute;
+                    top: -25px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    white-space: nowrap;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                    pointer-events: none;
+                }
+                .ff-voice-status.visible {
+                    opacity: 1;
+                }
+
+                /* Input area with voice */
+                .ff-chat-input-area {
+                    position: relative;
+                }
+
+                /* Speaker button in messages */
+                .ff-speak-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 24px;
+                    height: 24px;
+                    border: none;
+                    background: transparent;
+                    cursor: pointer;
+                    opacity: 0.5;
+                    transition: opacity 0.2s;
+                    margin-left: 5px;
+                    vertical-align: middle;
+                }
+                .ff-speak-btn:hover {
+                    opacity: 1;
+                }
+                .ff-speak-btn svg {
+                    width: 16px;
+                    height: 16px;
+                    fill: ${CONFIG.primaryColor};
+                }
+
+                /* Voice wave animation */
+                .ff-voice-wave {
+                    display: flex;
+                    align-items: center;
+                    gap: 2px;
+                    height: 20px;
+                }
+                .ff-voice-wave span {
+                    width: 3px;
+                    background: #ff4757;
+                    border-radius: 2px;
+                    animation: voiceWave 0.5s ease-in-out infinite;
+                }
+                .ff-voice-wave span:nth-child(1) { animation-delay: 0s; height: 8px; }
+                .ff-voice-wave span:nth-child(2) { animation-delay: 0.1s; height: 12px; }
+                .ff-voice-wave span:nth-child(3) { animation-delay: 0.2s; height: 16px; }
+                .ff-voice-wave span:nth-child(4) { animation-delay: 0.1s; height: 12px; }
+                .ff-voice-wave span:nth-child(5) { animation-delay: 0s; height: 8px; }
+                @keyframes voiceWave {
+                    0%, 100% { transform: scaleY(1); }
+                    50% { transform: scaleY(1.5); }
+                }
+
+                /* ElevenLabs Widget Container */
+                .ff-elevenlabs-widget {
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 9998;
+                }
             `;
             document.head.appendChild(styles);
         }
@@ -716,7 +1190,18 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
                     <button class="ff-quick-reply" data-message="What services do you offer?">❓ Services</button>
                 </div>
                 <div class="ff-chat-input-area">
-                    <input type="text" class="ff-chat-input" placeholder="Type your message...">
+                    <button class="ff-voice-btn" id="ff-mic-btn" title="Voice Input">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                        <span class="ff-voice-status" id="ff-voice-status">Listening...</span>
+                    </button>
+                    <input type="text" class="ff-chat-input" placeholder="Type or speak your message...">
+                    <button class="ff-voice-btn" id="ff-speaker-btn" title="Toggle Auto-Speak">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                    </button>
                     <button class="ff-chat-send">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -726,6 +1211,11 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
             `;
             document.body.appendChild(widget);
 
+            // Optionally add ElevenLabs conversational widget
+            if (CONFIG.voiceAgentId) {
+                this.addElevenLabsWidget();
+            }
+
             this.elements = {
                 trigger,
                 widget,
@@ -734,8 +1224,31 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
                 sendBtn: widget.querySelector('.ff-chat-send'),
                 closeBtn: widget.querySelector('.ff-chat-close'),
                 badge: trigger.querySelector('.ff-chat-badge'),
-                quickReplies: widget.querySelectorAll('.ff-quick-reply')
+                quickReplies: widget.querySelectorAll('.ff-quick-reply'),
+                micBtn: widget.querySelector('#ff-mic-btn'),
+                speakerBtn: widget.querySelector('#ff-speaker-btn'),
+                voiceStatus: widget.querySelector('#ff-voice-status')
             };
+        }
+
+        addElevenLabsWidget() {
+            // Add ElevenLabs Conversational AI Widget (phone call capability)
+            const widgetContainer = document.createElement('div');
+            widgetContainer.className = 'ff-elevenlabs-widget';
+            widgetContainer.innerHTML = `
+                <button onclick="window.FloFactionVoice?.startElevenLabsCall()"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                               color: white; border: none; border-radius: 50%;
+                               width: 50px; height: 50px; cursor: pointer;
+                               box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                               display: flex; align-items: center; justify-content: center;"
+                        title="Call AI Assistant">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                </button>
+            `;
+            document.body.appendChild(widgetContainer);
         }
 
         bindEvents() {
@@ -754,6 +1267,23 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
                     this.sendMessage();
                 });
             });
+
+            // Voice input button
+            if (this.elements.micBtn) {
+                this.elements.micBtn.addEventListener('click', () => {
+                    this.voice.toggleListening();
+                });
+            }
+
+            // Speaker/auto-speak toggle button
+            if (this.elements.speakerBtn) {
+                this.elements.speakerBtn.addEventListener('click', () => {
+                    this.autoSpeakEnabled = !this.autoSpeakEnabled;
+                    this.elements.speakerBtn.classList.toggle('speaking', this.autoSpeakEnabled);
+                    this.updateVoiceStatus(this.autoSpeakEnabled ? 'Auto-speak ON' : 'Auto-speak OFF');
+                    setTimeout(() => this.updateVoiceStatus(''), 2000);
+                });
+            }
 
             // Track activity
             document.addEventListener('mousemove', () => this.lastActivity = Date.now());
@@ -809,10 +1339,33 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
         addMessage(text, type) {
             const message = document.createElement('div');
             message.className = `ff-chat-message ${type}`;
-            message.innerHTML = type === 'bot' ? formatMessage(text) : text;
+
+            if (type === 'bot') {
+                // Format message and add speak button
+                const formattedText = formatMessage(text);
+                message.innerHTML = `
+                    <span class="ff-message-text">${formattedText}</span>
+                    <button class="ff-speak-btn" title="Listen to this message">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                        </svg>
+                    </button>
+                `;
+
+                // Add click handler for speak button
+                const speakBtn = message.querySelector('.ff-speak-btn');
+                speakBtn.addEventListener('click', () => {
+                    this.voice.speak(text);
+                });
+            } else {
+                message.innerHTML = text;
+            }
+
             this.elements.messages.appendChild(message);
             this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
             this.messages.push({ text, type, timestamp: new Date() });
+
+            return message;
         }
 
         showTyping() {
@@ -835,6 +1388,11 @@ Or call us at ${CONFIG.phone} for immediate assistance! 📞`;
             const { name, intent, match } = detectIntent(text);
             const response = intent.response(match, text);
             this.addMessage(response, 'bot');
+
+            // Auto-speak response if enabled
+            if (this.autoSpeakEnabled) {
+                this.voice.speak(response);
+            }
 
             // Log interaction for analytics
             this.logInteraction(text, response, name);
