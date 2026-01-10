@@ -409,7 +409,7 @@
         timestamp: serverTimestamp()
       };
 
-    fetch('https://us-central1-flofaction-website-44132480.cloudfunctions.net/submitIntake', {
+    fetch('/api/intake-form', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
