@@ -128,7 +128,7 @@
     const defaultNavItems = [
         { text: 'Home', href: '/' },
         { text: 'Services', href: '#', dropdown: [
-            { text: 'Insurance', href: '/insurance' },
+            { text: 'Insurance', href: '/insurance.html' },
             { text: 'Financial Calculators', href: '/finance/' },
             { text: 'Healthcare', href: '/healthcare.html' },
             { text: 'Real Estate', href: '/real-estate.html' },
@@ -136,8 +136,11 @@
             { text: 'Retirement Planning', href: '/retirement.html' },
             { text: 'Legacy Planning', href: '/legacy.html' }
         ]},
+        { text: 'Pricing', href: '/pricing.html' },
+        { text: 'Roadmap', href: '/roadmap.html' },
         { text: 'Calculators', href: '/finance/' },
-        { text: 'Contact', href: '/contact' }
+        { text: 'Get Started', href: '/intake.html' },
+        { text: 'Contact', href: '/contact.html' }
     ];
 
     function createBurgerButton() {
