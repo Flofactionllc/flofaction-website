@@ -355,7 +355,8 @@ const FloFactionConfig = {
             stripe: { configured: true, purpose: "Payments" },
             qualifire: { configured: true },
             dashscope: { configured: false, note: "To be added" },
-            googleAnalytics: { configured: true }
+            googleAnalytics: { configured: true },
+            manychat: { configured: true, purpose: "Multi-channel Chatbot Automation", channels: ["Facebook Messenger", "Instagram", "WhatsApp", "SMS"] }
         },
         email: {
             hri: { smtp: true, variables: ["SMTP_HOST_HRI", "SMTP_PORT_HRI", "SMTP_USER_HRI", "SMTP_PASS_HRI"] },
@@ -367,7 +368,8 @@ const FloFactionConfig = {
             googleVoice: { number: "772-208-9646", account: "flofactionllc@gmail.com" },
             whatsapp: { account: "flofactionllc@gmail.com" },
             slack: { status: "ready" },
-            hubspot: { status: "integration ready" }
+            hubspot: { status: "integration ready" },
+            manychat: { status: "configured", channels: ["Messenger", "Instagram", "WhatsApp", "SMS"] }
         },
         crm: {
             primary: "Custom CRM (Base44 'Flo Faction Agent Hub')",
