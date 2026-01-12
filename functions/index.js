@@ -5,7 +5,28 @@ const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 
-// Email routing configuration
+// ============================================
+// IMPORT MODULES
+// ============================================
+
+// Phone Arbitrage System
+const phoneArbitrage = require('./agents/PhoneArbitrageSystem');
+
+// Payment Handlers
+const paymentHandlers = require('./paymentHandlers');
+
+// ManyChat Integration
+const manychat = require('./manychat-integration');
+
+// Agent Framework
+const agentHandler = require('./agent-handler');
+
+// Lead Management
+const leadManagement = require('./leadManagement');
+
+// ============================================
+// EMAIL ROUTING CONFIGURATION
+// ============================================
 const emailRouting = {
   property: {
     keywords: ['auto', 'car', 'vehicle', 'homeowners', 'home', 'renters', 'landlord', 'property', 'fire', 'theft'],
@@ -256,3 +277,80 @@ exports.submitIntake = functions.https.onRequest((req, res) => {
 exports.health = functions.https.onRequest((req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// ============================================
+// PHONE ARBITRAGE SYSTEM EXPORTS
+// ============================================
+
+// Route incoming calls (webhook for Twilio/Google Voice)
+exports.routeCall = phoneArbitrage.routeCall;
+
+// Handle inbound SMS (webhook)
+exports.handleInboundSMS = phoneArbitrage.handleInboundSMS;
+
+// Send campaign SMS
+exports.sendSMS = phoneArbitrage.sendSMS;
+
+// Create lead
+exports.createLead = phoneArbitrage.createLead;
+
+// Initiate outbound call
+exports.initiateCall = phoneArbitrage.initiateCall;
+
+// Run nurture campaign
+exports.runNurtureCampaign = phoneArbitrage.runNurtureCampaign;
+
+// Scheduled: Daily nurture
+exports.dailyNurture = phoneArbitrage.dailyNurture;
+
+// Scheduled: Hot lead follow-up
+exports.hotLeadFollowup = phoneArbitrage.hotLeadFollowup;
+
+// Phone system status
+exports.getPhoneSystemStatus = phoneArbitrage.getPhoneSystemStatus;
+
+// ============================================
+// PAYMENT HANDLER EXPORTS
+// ============================================
+
+// Stripe payment
+exports.createStripePayment = paymentHandlers.createStripePayment;
+
+// PayPal payment
+exports.createPayPalOrder = paymentHandlers.createPayPalOrder;
+
+// Bitcoin payment
+exports.createBitcoinPayment = paymentHandlers.createBitcoinPayment;
+
+// Validate coupon
+exports.validateCoupon = paymentHandlers.validateCoupon;
+
+// Get order
+exports.getOrder = paymentHandlers.getOrder;
+
+// ============================================
+// MANYCHAT INTEGRATION EXPORTS
+// ============================================
+
+// ManyChat webhook
+exports.manychatWebhook = manychat.manychatWebhook;
+
+// Sync subscriber
+exports.syncSubscriber = manychat.syncSubscriber;
+
+// ============================================
+// AGENT HANDLER EXPORTS
+// ============================================
+
+// Process agent request
+exports.processAgentRequest = agentHandler.processAgentRequest;
+
+// ============================================
+// LEAD MANAGEMENT EXPORTS
+// ============================================
+
+// Qualify lead
+exports.qualifyLead = leadManagement.qualifyLead;
+
+// Update lead status
+exports.updateLeadStatus = leadManagement.updateLeadStatus;
